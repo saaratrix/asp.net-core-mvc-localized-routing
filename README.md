@@ -1,0 +1,1 @@
+# asp.net-mvc-core-1.0-localized-routing
