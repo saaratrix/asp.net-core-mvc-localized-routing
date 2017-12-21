@@ -1,9 +1,0 @@
-*.suo
-*.user
-*.csproj
-*.xproj
-*.config
-*.cache
-/localization/node_modules
-/artifacts/*
-/.vs/*
