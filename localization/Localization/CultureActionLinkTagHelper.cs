@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc.ViewFeatures;
-using Microsoft.AspNet.Razor.TagHelpers;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace localization.Localization
 {
     [HtmlTargetElement("a", Attributes = CultureAttributeName)]
     public class CultureActionLinkTagHelper : TagHelper
-    {
+    {   
         private const string CultureAttributeName = "cms-culture";        
         /// <summary>
         /// The culture attribute
         /// </summary>        
         [HtmlAttributeName(CultureAttributeName)]
-        public string Culture { get; set; }        
+        public string Culture { get; set; }
 
         public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {   
-            if (string.IsNullOrEmpty( Culture ))
+            if (string.IsNullOrEmpty(Culture))
             {
                 Culture = LocalizationDataHandler.DefaultCulture;
             }            
@@ -29,9 +29,12 @@ namespace localization.Localization
             string actionName = context.AllAttributes["asp-action"].Value as string;
 
             LocalizedUrlResult result = LocalizationDataHandler.GetUrl(controllerName, actionName, Culture);
-
-            output.Attributes["href"] = result.Url;
-            output.Content.SetContent(result.LinkName);               
+            
+            output.Attributes.SetAttribute("href", result.Url);
+            if (result.LinkName != "")
+            {
+                output.Content.SetContent(result.LinkName);
+            }           
 
             return Task.FromResult(0);
         }

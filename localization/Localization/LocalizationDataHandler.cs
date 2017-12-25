@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -109,7 +110,7 @@ namespace localization.Localization
                         }
 
                         result.Url = "/" + a_controller + a_action;
-                        result.LinkName = a_action;                        
+                        result.LinkName = a_action;  
                     }
                     // If the culture isn't default culture
                     else
@@ -136,7 +137,6 @@ namespace localization.Localization
                 {
                     
                 }
-
             }
 
             return result;

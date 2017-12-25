@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
-<head>
+<head lang="@ViewData["culture"]">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - localization</title>
@@ -26,13 +26,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">localization</a>
+                <a href="/@ViewData["culture"]" class="navbar-brand">localization</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a asp-controller="Home" asp-action="Index" cms-culture="@ViewData["culture"]">Home</a></li>
+                    <li><a asp-controller="Home" asp-action="About" cms-culture="@ViewData["culture"]">About</a></li>
+                    <li><a asp-controller="Home" asp-action="Contact" cms-culture="@ViewData["culture"]">Contact</a></li>
+                    <li><a asp-controller="Local" asp-action="Index" cms-culture="@ViewData["culture"]">Localtest</a></li>
+                    <li><a asp-controller="Local" asp-action="Parameter" asp-route-index="5" asp-route-test="@ViewData["culture"]" cms-culture="@ViewData["culture"]">local param</a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>

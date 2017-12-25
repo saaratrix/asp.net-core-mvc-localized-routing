@@ -256,3 +256,7 @@ paket-files/
 .vs/config/applicationhost.config
 .vs/localization/v15/.suo
 .vs/localization/v15/Server/sqlite3/storage.ide
+
+localization/bin/
+localization/obj/
+localization/obj/

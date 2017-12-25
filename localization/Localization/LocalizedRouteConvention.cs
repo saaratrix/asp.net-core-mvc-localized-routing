@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace localization.Localization
 {
@@ -22,6 +22,7 @@ namespace localization.Localization
             foreach (ControllerModel controller in application.Controllers)
             {    
                 // If the controllerName is the same as the base controller for localization go next since it's irrelevant!
+                // Basically Localization is a controller with 0 actions. Since it's what all other controllers inherit from.
                 if (controller.ControllerName == "Localization")
                 {
                     continue;
@@ -32,6 +33,22 @@ namespace localization.Localization
                 // Do the actions!
                 AddActionRoutes(controller);                       
             }
+        }
+
+        public void AddAttributeRouteModel(IList<SelectorModel> a_selectorModels, AttributeRouteModel a_attributeRouteModel)
+        {
+            // Override what seems to be default SelectorModel
+            if (a_selectorModels.Count == 1 && a_selectorModels[0].AttributeRouteModel == null)
+            {
+                a_selectorModels[0].AttributeRouteModel = a_attributeRouteModel;
+            }
+            else
+            {
+                a_selectorModels.Add(new SelectorModel
+                {
+                    AttributeRouteModel = a_attributeRouteModel
+                });
+            }            
         }
 
         /// <summary>
@@ -46,13 +63,14 @@ namespace localization.Localization
             var controllerLocalizations = a_controller.Attributes.OfType<LocalizedRouteAttribute>().ToList();
             // The controllerName (writing a_controler. everytime is hard yo!)
             string controllerName = a_controller.ControllerName;
+
             // If the controller is the default controller then add the "/" route by adding an empty ""
             if (controllerName == LocalizationDataHandler.DefaultController)
             {
                 //CultureAttributeRouteModel defaultRoute = new CultureAttributeRouteModel(DefaultCulture);
                 AttributeRouteModel defaultRoute = new AttributeRouteModel();
                 defaultRoute.Template = "";
-                a_controller.AttributeRoutes.Add(defaultRoute);
+                AddAttributeRouteModel(a_controller.Selectors, defaultRoute);                        
 
                 // If it's the default controller then
                 LocalizationDataHandler.AddControllerData(controllerName, DefaultCulture, "");
@@ -64,11 +82,10 @@ namespace localization.Localization
             }
 
             // Create the route for the controller,  since default controller should also be reachable by /default this is not done in the else statement
-            // Which is not needed for the localized routing since linking to / is fine!
-            //CultureAttributeRouteModel controllerRoute = new CultureAttributeRouteModel(DefaultCulture, a_controller.ControllerName); 
+            // Which is not needed for the localized routing since linking to / is fine!            
             AttributeRouteModel controllerRoute = new AttributeRouteModel();
-            controllerRoute.Template = a_controller.ControllerName;
-            a_controller.AttributeRoutes.Add(controllerRoute);
+            controllerRoute.Template = a_controller.ControllerName;                    
+            AddAttributeRouteModel(a_controller.Selectors, controllerRoute);
 
             // So that any culture that doesn't have the controller added as a route will automatically get the default culture route,
             // Example if [LocalizedRoute("sv", ""] is not on the defaultcontroller it will be added so its found!
@@ -81,8 +98,8 @@ namespace localization.Localization
                 string template = attribute.Culture + "/" + attribute.Route;
                 //CultureAttributeRouteModel localRoute = new CultureAttributeRouteModel(attribute.Culture, template);
                 AttributeRouteModel localRoute = new AttributeRouteModel();
-                localRoute.Template = template;
-                a_controller.AttributeRoutes.Add(localRoute);
+                localRoute.Template = template;                
+                AddAttributeRouteModel(a_controller.Selectors, localRoute);
 
                 // Add the route to the localizations dictionary
                 LocalizationDataHandler.AddControllerData(controllerName, attribute.Culture, template);
@@ -101,12 +118,10 @@ namespace localization.Localization
                    
                 }
                 string template = culture.Value + "/" + tempName;
-
-
-                //CultureAttributeRouteModel localRoute = new CultureAttributeRouteModel(culture.Value, template);
+                
                 AttributeRouteModel localRoute = new AttributeRouteModel();
                 localRoute.Template = template;
-                a_controller.AttributeRoutes.Add(localRoute);
+                AddAttributeRouteModel(a_controller.Selectors, localRoute);
 
                 LocalizationDataHandler.AddControllerData(controllerName, culture.Value, template);
             }
@@ -124,36 +139,40 @@ namespace localization.Localization
             List<ActionModel> newActions = new List<ActionModel>();
             // Loop through all the actions to add their routes and also get the localized actions
             foreach (ActionModel action in a_controller.Actions)
-            {
+            {                
                 string actionName = action.ActionName;
                 // If any parameters are needed such as /{index}
-                string parameterTemplate = "";                
+                string parameterTemplate = "";
 
-                // If there is no [Route()] Attribute then create one for the route.
-                if (action.AttributeRouteModel == null)
+                SelectorModel defaultSelectionModel = action.Selectors.FirstOrDefault(x => x.AttributeRouteModel != null);
+
+                // If there is no[Route()] Attribute then create one for the route.
+                if (defaultSelectionModel == null || defaultSelectionModel.AttributeRouteModel == null)
                 {
                     //action.AttributeRouteModel = new CultureAttributeRouteModel(DefaultCulture);
-                    action.AttributeRouteModel = new AttributeRouteModel();
+                    AttributeRouteModel attributeRouteModel = new AttributeRouteModel();
 
                     if (action.ActionName != LocalizationDataHandler.DefaultAction)
                     {
-                        action.AttributeRouteModel.Template = actionName;
+                        attributeRouteModel.Template = actionName;
                         // Add the action name as it is eg: about will be about!
                         LocalizationDataHandler.AddActionData(controllerName, actionName, DefaultCulture, actionName, actionName);
                     }
                     else
                     {
-                        action.AttributeRouteModel.Template = "";
+                        attributeRouteModel.Template = "";
                         // If action name is the default name then just add route as ""
                         // Final result for default controller & action will be "" + ""  => /
-                        LocalizationDataHandler.AddActionData(controllerName, actionName, DefaultCulture, "", controllerName);                        
+                        LocalizationDataHandler.AddActionData(controllerName, actionName, DefaultCulture, "", controllerName);
                     }
+
+                    AddAttributeRouteModel(action.Selectors, attributeRouteModel);
                 }
                 // If a route already existed then check for parameter arguments to add to the cultural routes
                 else
-                {                    
+                {
                     // Check if the route has parameters
-                    string[] actionComponents = action.AttributeRouteModel.Template.Split('/');
+                    string[] actionComponents = defaultSelectionModel.AttributeRouteModel.Template.Split('/');
 
                     for (int i = 0; i < actionComponents.Length; i++)
                     {
@@ -161,8 +180,8 @@ namespace localization.Localization
                         if (actionComponents[i][0] == '{')
                         {
                             parameterTemplate += "/" + actionComponents[i];
-                        }                        
-                    }                  
+                        }
+                    }
                 }
 
                 var actionLocalizationsAttributes = action.Attributes.OfType<LocalizedRouteAttribute>().ToList();
@@ -170,11 +189,13 @@ namespace localization.Localization
                 foreach (LocalizedRouteAttribute attribute in actionLocalizationsAttributes)
                 {
                     string route = attribute.Route += parameterTemplate;
-                    ActionModel newLocalizedActions = new ActionModel(action);
-                    //newLocalizedActions.AttributeRouteModel = new CultureAttributeRouteModel(attribute.Culture, attribute.Route);
-                    newLocalizedActions.AttributeRouteModel = new AttributeRouteModel();
-                    newLocalizedActions.AttributeRouteModel.Template = attribute.Route;
-                    newActions.Add(newLocalizedActions);
+                    ActionModel newLocalizedActionModel = new ActionModel(action);
+                    AttributeRouteModel newLocalizedAttributeRouteModel = new AttributeRouteModel();
+                    newLocalizedAttributeRouteModel.Template = attribute.Route;
+                    // Add the new actionModel for adding to controller later
+                    newActions.Add(newLocalizedActionModel);
+
+                    AddAttributeRouteModel(newLocalizedActionModel.Selectors, newLocalizedAttributeRouteModel);
                     // Add the localized route for the action
                     // Example of final route:  "fi/koti" + "/" + "ota_yhteyttä"
                     LocalizationDataHandler.AddActionData(controllerName, actionName, attribute.Culture, attribute.Route, attribute.Link);
