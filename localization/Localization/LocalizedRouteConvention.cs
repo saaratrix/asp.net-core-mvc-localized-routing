@@ -23,6 +23,7 @@ namespace localization.Localization
             {    
                 // If the controllerName is the same as the base controller for localization go next since it's irrelevant!
                 // Basically Localization is a controller with 0 actions. Since it's what all other controllers inherit from.
+                // It still ends up in application.Controllers which is why we just continue; here.
                 if (controller.ControllerName == "Localization")
                 {
                     continue;
@@ -35,6 +36,12 @@ namespace localization.Localization
             }
         }
 
+        /// <summary>
+        /// Add an AttributeRouteModel to a SelectorModel list.
+        /// It also tries to set the first entry of the list if the AttributeRouteModel is null there.
+        /// </summary>
+        /// <param name="a_selectorModels"></param>
+        /// <param name="a_attributeRouteModel"></param>
         public void AddAttributeRouteModel(IList<SelectorModel> a_selectorModels, AttributeRouteModel a_attributeRouteModel)
         {
             // Override what seems to be default SelectorModel

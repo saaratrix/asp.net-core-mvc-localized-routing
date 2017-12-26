@@ -70,16 +70,7 @@ namespace localization.Localization
                 CultureInfo cultureInfo = new CultureInfo(Culture, false);
                 TextInfo textInfo = cultureInfo.TextInfo;
                 // Do the opposite that route does,  replace the whitespace replacement characters with whitespace!
-                Link = textInfo.ToTitleCase(Route.Replace(WhiteSpaceReplacement, ' '));
-
-                //CultureInfo cultureInfo = new CultureInfo(Culture);
-                //TextInfo textInfo = cultureInfo.TextInfo;
-                //textInfo.ToT
-                ////Link = textInfo.ToUpper(Route[0]).ToString();
-                //if (Route.Length > 1)
-                //{
-                //    Link += Route.Substring(1);
-                //}
+                Link = textInfo.ToTitleCase(Route.Replace(WhiteSpaceReplacement, ' '));                
             }
             else
             {
