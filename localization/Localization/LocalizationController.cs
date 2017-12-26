@@ -3,19 +3,23 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace localization.Localization
 {
     public class LocalizationController : Controller
-    {
+    {        
         public override void OnActionExecuting(ActionExecutingContext context)
         {            
-            base.OnActionExecuting(context);            
+            base.OnActionExecuting(context);
             // Get the action & controllerName
-            string actionName = context.ActionDescriptor.Name;
-            string controllerName = context.RouteData.Values["controller"].ToString();
+            //string actionName = context.ActionDescriptor.ActionName;  
+            ControllerActionDescriptor actionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
+
+            string controllerName = actionDescriptor?.ControllerName ?? "";
+            string actionName = actionDescriptor?.ActionName ?? "";
 
             string culture = CultureInfo.CurrentCulture.Name;
             ViewData["culture"] = culture;

@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using localization.Models;
 using localization.Localization;
 
 namespace localization.Controllers
 {
     // This is not neccesary if Home is the defaultcontroller, automatically happens!    
-    [LocalizedRoute("fi", "")]    
-    [LocalizedRoute("sv", "")]
+    [LocalizedRoute("fi")]
+    [LocalizedRoute("sv")]
     public class HomeController : LocalizationController
     {   
-        
         public IActionResult Index()
         {
             return View();
@@ -37,10 +38,10 @@ namespace localization.Controllers
 
             return View();
         }
-        
+
         public IActionResult Error()
         {
-            return View();
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
