@@ -182,14 +182,18 @@ namespace localization.Localization
                             parameterTemplate += "/" + actionComponents[i];
                         }
                     }
+
+                    LocalizationDataHandler.AddActionData(controllerName, actionName, DefaultCulture, actionName, actionName);
                 }
 
                 var actionLocalizationsAttributes = action.Attributes.OfType<LocalizedRouteAttribute>().ToList();
 
                 foreach (LocalizedRouteAttribute attribute in actionLocalizationsAttributes)
                 {
-                    string route = attribute.Route += parameterTemplate;
+                    string route = attribute.Route + parameterTemplate;
                     ActionModel newLocalizedActionModel = new ActionModel(action);
+                    // Clear the Selectors or it will have shared selector data
+                    newLocalizedActionModel.Selectors.Clear();
                     AttributeRouteModel newLocalizedAttributeRouteModel = new AttributeRouteModel();
                     newLocalizedAttributeRouteModel.Template = attribute.Route;
                     // Add the new actionModel for adding to controller later
@@ -200,12 +204,13 @@ namespace localization.Localization
                     // Example of final route:  "fi/koti" + "/" + "ota_yhteyttä"
                     LocalizationDataHandler.AddActionData(controllerName, actionName, attribute.Culture, attribute.Route, attribute.Link);
                 }
-            }
+            } // End foreach a_controller.Actions
+
             // Now add all the new actions to the controller
             foreach (ActionModel action in newActions)
             {
                 a_controller.Actions.Add(action);
-            }
+            }            
         }      
     }
 }

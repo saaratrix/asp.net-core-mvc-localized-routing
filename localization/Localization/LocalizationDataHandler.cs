@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace localization.Localization
@@ -44,7 +45,7 @@ namespace localization.Localization
                 ControllerRoutes.TryAdd(controllerKey, new CultureControllerData());
             }            
             ControllerRoutes[controllerKey].Names.TryAdd(a_culture, a_route);
-        }
+        }        
 
         /// <summary>
         /// Add the action data.  Will throw exception if the controller doesn't exist
@@ -88,34 +89,36 @@ namespace localization.Localization
                 {
                     // Ok now we have the controller name and action data name!
                     CultureActionData actionData = controllerData.Actions[a_actionKey];
-                    
+                    bool removeController = false;
+
                     // Check if culture is default culture
                     if (a_culture == DefaultCulture)
                     {
-                        // Using "".Equals for the case insensitivity because from like the tag helper it can be lower or upper case.
-                        // Could also use the controllerKey that is lowercase and then make defaultController lowercase
-                        if (a_controller.Equals(DefaultController, StringComparison.CurrentCultureIgnoreCase))
-                        {
-                            a_controller = "";
-                        }
-                        else
-                        {
-                            // If controller isn't default then add a /
-                            // /controller/action
-                            a_controller += "/";
-                        }
                         if (a_action.Equals(DefaultAction, StringComparison.CurrentCultureIgnoreCase))
                         {
                             a_action = "";
+
+                            if (a_controller.Equals(DefaultController, StringComparison.CurrentCultureIgnoreCase))
+                            {                                
+                                removeController = true;
+                            }
                         }
+
+                        if (!removeController)
+                        {
+                            a_controller += "/";
+                        } 
+                        else
+                        {
+                            a_controller = "";
+                        }                        
 
                         result.Url = "/" + a_controller + a_action;
                         result.LinkName = a_action;  
                     }
                     // If the culture isn't default culture
                     else
-                    {
-                        
+                    {   
                         CultureUrlData linkData = actionData.UrlData.ContainsKey(a_culture) ? actionData.UrlData[a_culture] : actionData.UrlData[DefaultCulture];
                         // If the controller doesn't exist add the culture prefix to it stays in the culture prefix space.
                         string controllerName = controllerData.Names.ContainsKey(a_culture) ? controllerData.Names[a_culture] : a_culture + "/" + a_controller;
@@ -142,5 +145,24 @@ namespace localization.Localization
             return result;
         }
 
+        /// <summary>
+        /// Get the culture from an url by checking if the href starts with /culture/
+        /// So there is possibility of a collision if a controller is called a culture!  
+        /// So don't name them cultures!!
+        /// </summary>
+        /// <param name="a_href"></param>
+        /// <returns></returns>
+        public static string GetCultureFromHref(string a_href)
+        {
+            string result = DefaultCulture;
+            foreach(string culture in SupportedCultures)
+            {
+                if (a_href.StartsWith("/" + culture + "/"))
+                {
+                    result = culture;
+                }
+            }
+            return result;
+        }        
     }
 }
