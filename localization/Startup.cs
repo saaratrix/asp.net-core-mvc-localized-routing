@@ -71,7 +71,7 @@ namespace localization
 
             requestLocalizationOptions.RequestCultureProviders = new List<IRequestCultureProvider>()
             {
-                new UrlCultureProvider(  requestLocalizationOptions.SupportedCultures )
+                new UrlCultureProvider(requestLocalizationOptions.SupportedCultures)
             };            
 
             app.UseRequestLocalization(requestLocalizationOptions);

@@ -14,8 +14,7 @@ namespace localization.Localization
         public override void OnActionExecuting(ActionExecutingContext context)
         {            
             base.OnActionExecuting(context);
-            // Get the action & controllerName
-            //string actionName = context.ActionDescriptor.ActionName;  
+            // Get the action & controllerName            
             ControllerActionDescriptor actionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
 
             string controllerName = actionDescriptor?.ControllerName ?? "";
