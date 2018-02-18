@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{ 
+    string culture = ViewData["culture"] as string;
+    string brandUrl = culture != localization.Localization.LocalizationDataHandler.DefaultCulture ? culture : "";
+}
+<!DOCTYPE html>
 <html>
 <head lang="@ViewData["culture"]">
     <meta charset="utf-8" />
@@ -26,7 +30,8 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="/@ViewData["culture"]" class="navbar-brand">localization</a>
+                @* This will be wrong for default culture because no routes are set up for /en *@
+                <a href="/@brandUrl" class="navbar-brand">localization</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -34,7 +39,7 @@
                     <li><a asp-controller="Home" asp-action="About" cms-culture="@ViewData["culture"]">About</a></li>
                     <li><a asp-controller="Home" asp-action="Contact" cms-culture="@ViewData["culture"]">Contact</a></li>
                     <li><a asp-controller="Local" asp-action="Index" cms-culture="@ViewData["culture"]">Localtest</a></li>
-                    <li><a asp-controller="Local" asp-action="Parameter" asp-route-index="5" asp-route-test="@ViewData["culture"]" cms-culture="@ViewData["culture"]">local param</a></li>
+                    <li><a asp-controller="Local" asp-action="Parameter" asp-route-index="5" asp-route-test="@ViewData["culture"]" cms-culture="@ViewData["culture"]">local param</a></li>                   
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>

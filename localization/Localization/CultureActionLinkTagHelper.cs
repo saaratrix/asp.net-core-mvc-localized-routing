@@ -32,7 +32,7 @@ namespace localization.Localization
             TagHelperAttribute hrefAttribute = output.Attributes.FirstOrDefault(x => x.Name == "href");
             string originalHref = hrefAttribute.Value as string;
 
-            string originalCulture = LocalizationDataHandler.GetCultureFromHref(originalHref);
+            string originalCulture = LocalizationDataHandler.GetCultureFromUrl(originalHref);
 
             // Get the controllerName and actionName
             string controllerName = context.AllAttributes["asp-controller"].Value as string;

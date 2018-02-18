@@ -47,7 +47,7 @@ namespace localization
                 "fi",
                 "sv"
             };
-           
+
             services.AddMvc(options =>
             {
                 options.Conventions.Add(new LocalizedRouteConvention());
@@ -59,15 +59,16 @@ namespace localization
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             RequestCulture defaultCulture = new RequestCulture(LocalizationDataHandler.DefaultCulture);
-            RequestLocalizationOptions requestLocalizationOptions = new RequestLocalizationOptions();            
-
-            requestLocalizationOptions.SupportedCultures = new List<CultureInfo>();
+            RequestLocalizationOptions requestLocalizationOptions = new RequestLocalizationOptions()
+            {
+                DefaultRequestCulture = defaultCulture,
+                SupportedCultures = new List<CultureInfo>()
+            };
+            
             foreach (string culture in LocalizationDataHandler.SupportedCultures)
             {
                 requestLocalizationOptions.SupportedCultures.Add(new CultureInfo(culture));
-            }
-
-            requestLocalizationOptions.DefaultRequestCulture = defaultCulture;
+            }            
 
             requestLocalizationOptions.RequestCultureProviders = new List<IRequestCultureProvider>()
             {
@@ -90,7 +91,6 @@ namespace localization
             app.UseStaticFiles();
 
             app.UseAuthentication();
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -98,7 +98,6 @@ namespace localization
                     template: "{controller=Home}/{action=Index}/{id?}",
                     defaults: new { culture = LocalizationDataHandler.DefaultCulture }
                 );
-                    
             });
         }
     }

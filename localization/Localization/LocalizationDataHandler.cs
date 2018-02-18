@@ -150,19 +150,18 @@ namespace localization.Localization
         /// So there is possibility of a collision if a controller is called a culture!  
         /// So don't name them cultures!!
         /// </summary>
-        /// <param name="a_href"></param>
+        /// <param name="a_url"></param>
         /// <returns></returns>
-        public static string GetCultureFromHref(string a_href)
-        {
-            string result = DefaultCulture;
+        public static string GetCultureFromUrl(string a_url)
+        {            
             foreach(string culture in SupportedCultures)
             {
-                if (a_href.StartsWith("/" + culture + "/"))
+                if (a_url.StartsWith("/" + culture + "/"))
                 {
-                    result = culture;
+                    return culture;                    
                 }
             }
-            return result;
-        }        
+            return DefaultCulture;
+        }
     }
 }

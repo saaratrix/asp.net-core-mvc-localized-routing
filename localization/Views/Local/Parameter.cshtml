@@ -1,7 +1,35 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@using localization.Models.Local;
+@model ParameterViewModel
 @{
-}
+    // This is to clear the parameter route data for the [HttpGet] request that is added to the form action url    
+    // Example: /Local/Parameter/5/test 
+    // And the [HttpPost] route only listens to /Local/Parameter,  so /Local/Parameter/5/test would be a faulty route.
+    // Alternative one can write [HttpPost("parameter/{index}/{test}")] and then /Local/Parameter/ wouldn't work anymore but /Local/Parameter/5/test would!
+    var postroutedata = new Dictionary<string, string>()
+    {
+        { "Index", null },
+        { "Test", null }
+    };
 
-@ViewData["index"] - @ViewData["test"]
+    // TODO: Add cms-culture to forms so the route isn't always /fi/localFI/param
+}   
+
+    @ViewData["index"] - @ViewData["test"]
+<br />
+Is post request: @ViewData["post"]
+<br />
+<h2>HTTP Post request test</h2>
+<form method="post" asp-all-route-data="postroutedata" cms-culture="@ViewData["culture"]" asp-action="Parameter" asp-controller="Local">
+    <div>
+        <label asp-for="Index"></label>
+        <input asp-for="Index" />
+        <br />
+        <label asp-for="Test"></label>
+        <input asp-for="Test" />
+    </div>
+    <br />
+    <button type="submit">Post parameters</button>
+</form>

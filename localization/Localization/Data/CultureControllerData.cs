@@ -9,7 +9,7 @@ namespace localization.Localization
     public class CultureControllerData
     {
         /// <summary>
-        /// Different names in different cultures
+        /// Different names of the controller in different cultures
         /// </summary>
         public ConcurrentDictionary<string, string> Names { get; }
 

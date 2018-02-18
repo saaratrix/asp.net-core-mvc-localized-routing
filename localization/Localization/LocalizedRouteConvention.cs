@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace localization.Localization
@@ -121,8 +123,7 @@ namespace localization.Localization
                 string tempName = controllerName;
                 if (controllerName == LocalizationDataHandler.DefaultController)
                 {
-                    tempName = "";
-                   
+                    tempName = "";                   
                 }
                 string template = culture.Value + "/" + tempName;
                 
@@ -156,7 +157,6 @@ namespace localization.Localization
                 // If there is no[Route()] Attribute then create one for the route.
                 if (defaultSelectionModel == null || defaultSelectionModel.AttributeRouteModel == null)
                 {
-                    //action.AttributeRouteModel = new CultureAttributeRouteModel(DefaultCulture);
                     AttributeRouteModel attributeRouteModel = new AttributeRouteModel();
 
                     if (action.ActionName != LocalizationDataHandler.DefaultAction)
@@ -183,8 +183,15 @@ namespace localization.Localization
 
                     for (int i = 0; i < actionComponents.Length; i++)
                     {
+                        string actionComponent = actionComponents[i];
+                        // Incase of "/action/" 
+                        if (actionComponent.Length == 0)
+                        {
+                            continue;
+                        }
+
                         // Check if first character starts with {
-                        if (actionComponents[i][0] == '{')
+                        if (actionComponent[0] == '{')
                         {
                             parameterTemplate += "/" + actionComponents[i];
                         }
@@ -198,15 +205,27 @@ namespace localization.Localization
                 foreach (LocalizedRouteAttribute attribute in actionLocalizationsAttributes)
                 {
                     string route = attribute.Route + parameterTemplate;
-                    ActionModel newLocalizedActionModel = new ActionModel(action);
-                    // Clear the Selectors or it will have shared selector data
+                    // This copies all existing Attributes on the ActionModel,  [Route] [HttpGet] e.t.c.
+                    // Sourcefile: https://github.com/aspnet/Mvc/blob/dev/src/Microsoft.AspNetCore.Mvc.Core/ApplicationModels/ActionModel.cs
+                    ActionModel newLocalizedActionModel = new ActionModel(action);   
+
+                    // Clear the Selectors or it will have shared selector data from default route.
+                    // This however clears the ActionConstraints like [HttpGet] and [HttpPost]
                     newLocalizedActionModel.Selectors.Clear();
                     AttributeRouteModel newLocalizedAttributeRouteModel = new AttributeRouteModel();
-                    newLocalizedAttributeRouteModel.Template = attribute.Route;
+                    //newLocalizedAttributeRouteModel.Template = attribute.Route;   
+                    newLocalizedAttributeRouteModel.Template = route;
                     // Add the new actionModel for adding to controller later
                     newActions.Add(newLocalizedActionModel);
 
                     AddAttributeRouteModel(newLocalizedActionModel.Selectors, newLocalizedAttributeRouteModel);
+                    // Bug mentioned by anonymous through a comment on blog.
+                    // This is where the [HttpGet], [HttpPost] constraints are added back after being cleared earlier.                                 
+                    foreach(var actionConstraint in action.Selectors.Where(x => x.ActionConstraints.Count > 0).SelectMany(x => x.ActionConstraints))
+                    {
+                        newLocalizedActionModel.Selectors[0].ActionConstraints.Add(actionConstraint);
+                    }
+                    
                     // Add the localized route for the action
                     // Example of final route:  "fi/koti" + "/" + "ota_yhteyttä"
                     LocalizationDataHandler.AddActionData(controllerName, actionName, attribute.Culture, attribute.Route, attribute.Link);
