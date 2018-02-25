@@ -1,4 +1,4 @@
-2.0.1
+# 2.0.1
 
 ### Changes
 
@@ -10,8 +10,19 @@
 * Changed the brandUrl to either be `/{culture}` or `/` in `~/Views/Shared/_Layout.cshtml`
 
 ### Bugfixes: 
-* For the anchor tag `<a asp-controller="Local" asp-action="Parameter" asp-route-index="5" asp-route-test="@ViewData["culture"]" cms-culture="@ViewData["culture"]">`
-    The generated url was `/fi/localFI/parameter/{index}/{test}` instead of `/fi/localFI/param/{index}/{test}`   
+*   Solved bug where the anchor tag helper `cms-culture` could generate incorrect url.    
+    For this example the controller has attribute `[LocalizedRoute("fi", "localFI")]` 
+    and the action looks like this: 
+    ```
+    [Route("parameter/{index}/{test}")]
+    [LocalizedRoute("fi", "param")]
+    public IActionResult Parameter(int index, string test)
+    ```    
+    However for the anchor tag helper 
+    
+    `<a asp-controller="Local" asp-action="Parameter" asp-route-index="5" asp-route-test="fi" cms-culture="fi">`
+    
+    The bug generated incorrect url `/fi/localFI/parameter/5/fi` instead of `/fi/localFI/param/5/fi`   
 	    
 * Fixed bug reported through a comment on blog! <3
     Inside `LocalizedRouteConvention.cs` when the `newLocalizedActionModel.Selectors.Clear()` is called.

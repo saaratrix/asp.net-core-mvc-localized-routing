@@ -9,7 +9,7 @@ using localization.Localization;
 
 namespace localization.Controllers
 {
-    // This is not neccesary if Home is the defaultcontroller, automatically happens!    
+    // This is not necessary if Home is the defaultcontroller, automatically happens!    
     [LocalizedRoute("fi")]
     [LocalizedRoute("sv")]
     public class HomeController : LocalizationController

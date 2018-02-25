@@ -25,7 +25,7 @@ namespace localization.Localization
         /// </summary>
         public string Route { get; set; }
         /// <summary>
-        /// What the linktext is for a Html.ActionLink
+        /// What the link text is for a Html.ActionLink
         /// </summary>
         public string Link { get; set; }
 

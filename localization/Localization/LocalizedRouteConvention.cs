@@ -70,7 +70,7 @@ namespace localization.Localization
         {
             // Get all the LocalizedRouteAttributes from the controller
             var controllerLocalizations = a_controller.Attributes.OfType<LocalizedRouteAttribute>().ToList();
-            // The controllerName (writing a_controler. everytime is hard yo!)
+            // The controllerName (writing a_controller. every time is hard yo!)
             string controllerName = a_controller.ControllerName;
 
             // If the controller is the default controller then add the "/" route by adding an empty ""
