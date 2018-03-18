@@ -5,7 +5,7 @@
 
 ### Issues closed
 
-* #5 - [Global errorhandling](issues/5)
+* #5 - [Global errorhandling](../../issues/5)
 
 # 2.0.1
 
