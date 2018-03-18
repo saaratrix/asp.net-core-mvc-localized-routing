@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Localization;
 
 namespace localization.Localization
 {
@@ -13,24 +14,12 @@ namespace localization.Localization
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {            
-            base.OnActionExecuting(context);
-            // Get the action & controllerName            
-            ControllerActionDescriptor actionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
-
-            string controllerName = actionDescriptor?.ControllerName ?? "";
-            string actionName = actionDescriptor?.ActionName ?? "";
+            base.OnActionExecuting(context); 
 
             string culture = CultureInfo.CurrentCulture.Name;
             ViewData["culture"] = culture;
-
-            // If the culture isn't default then ask database for the data needed to change.            
-            Dictionary<string, string> pagedata = new Dictionary<string, string>()
-            {
-                { "header", "a header!" },
-                { "body", "a body text!" }
-            };  
-
-            ViewData["pagedata"] = pagedata;   
-        }        
+        }  
+        
+        
     }
 }

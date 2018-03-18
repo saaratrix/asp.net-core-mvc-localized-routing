@@ -1,3 +1,12 @@
+# 2.0.2
+
+### Changes
+* Added global localized errorhandling
+
+### Issues closed
+
+* #5 - [Global errorhandling](issues/5)
+
 # 2.0.1
 
 ### Changes

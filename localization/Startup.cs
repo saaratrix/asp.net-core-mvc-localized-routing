@@ -14,6 +14,8 @@ using localization.Services;
 using localization.Localization;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.Options;
 
 namespace localization
 {
@@ -48,34 +50,42 @@ namespace localization
                 "sv"
             };
 
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+
             services.AddMvc(options =>
             {
                 options.Conventions.Add(new LocalizedRouteConvention());
+            })            
+            // Views.Shared._Layout is for the /Views/Shared/_Layout.cshtml file
+            .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+            // Add support for localizing strings in data annotations (e.g. validation messages) via the
+            // IStringLocalizer abstractions.
+            .AddDataAnnotationsLocalization();
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture(LocalizationDataHandler.DefaultCulture, LocalizationDataHandler.DefaultCulture);
+
+                foreach (string name in LocalizationDataHandler.SupportedCultures)
+                {
+                    CultureInfo culture = new CultureInfo(name);
+                    options.SupportedCultures.Add(culture);
+                    options.SupportedUICultures.Add(culture);
+                }
+
+                options.RequestCultureProviders = new List<IRequestCultureProvider>()
+                {
+                    new UrlCultureProvider(options.SupportedCultures)
+                };
             });
-            services.AddLocalization();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            RequestCulture defaultCulture = new RequestCulture(LocalizationDataHandler.DefaultCulture);
-            RequestLocalizationOptions requestLocalizationOptions = new RequestLocalizationOptions()
-            {
-                DefaultRequestCulture = defaultCulture,
-                SupportedCultures = new List<CultureInfo>()
-            };
-            
-            foreach (string culture in LocalizationDataHandler.SupportedCultures)
-            {
-                requestLocalizationOptions.SupportedCultures.Add(new CultureInfo(culture));
-            }            
-
-            requestLocalizationOptions.RequestCultureProviders = new List<IRequestCultureProvider>()
-            {
-                new UrlCultureProvider(requestLocalizationOptions.SupportedCultures)
-            };            
-
-            app.UseRequestLocalization(requestLocalizationOptions);
+            var localizationOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            app.UseRequestLocalization(localizationOptions.Value);            
 
             if (env.IsDevelopment())
             {
@@ -85,8 +95,11 @@ namespace localization
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler();                           
             }
+            
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
 
             app.UseStaticFiles();
 

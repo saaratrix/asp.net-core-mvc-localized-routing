@@ -1,13 +1,20 @@
-﻿@{ 
+﻿@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
     string culture = ViewData["culture"] as string;
-    string brandUrl = culture != localization.Localization.LocalizationDataHandler.DefaultCulture ? culture : "";
+    if (culture == null)
+    {
+        culture = CultureInfo.CurrentCulture.Name;
+    }
+    string brandUrl = localization.Localization.LocalizationDataHandler.GetUrl("home", "index", culture).Url;
 }
 <!DOCTYPE html>
 <html>
 <head lang="@ViewData["culture"]">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - localization</title>
+    <title>@ViewData["Title"] - @Localizer["Localization"]</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -24,14 +31,14 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" title="@Localizer["Toggle Navigation"]">
+                    <span class="sr-only">@Localizer["Toggle Navigation"]</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
                 @* This will be wrong for default culture because no routes are set up for /en *@
-                <a href="/@brandUrl" class="navbar-brand">localization</a>
+                <a href="@brandUrl" class="navbar-brand">@Localizer["Localization"]</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -39,7 +46,7 @@
                     <li><a asp-controller="Home" asp-action="About" cms-culture="@ViewData["culture"]">About</a></li>
                     <li><a asp-controller="Home" asp-action="Contact" cms-culture="@ViewData["culture"]">Contact</a></li>
                     <li><a asp-controller="Local" asp-action="Index" cms-culture="@ViewData["culture"]">Localtest</a></li>
-                    <li><a asp-controller="Local" asp-action="Parameter" asp-route-index="5" asp-route-test="@ViewData["culture"]" cms-culture="@ViewData["culture"]">local param</a></li>                   
+                    <li><a asp-controller="Local" asp-action="Parameter" asp-route-index="5" asp-route-test="@ViewData["culture"]" cms-culture="@ViewData["culture"]">local param</a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
@@ -49,7 +56,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2017 - localization</p>
+            <p>&copy; 2017 - @Localizer["Localization"]</p>
         </footer>
     </div>
 
