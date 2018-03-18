@@ -10,7 +10,7 @@ using localization.Localization;
 namespace localization.Controllers
 {
     // This is not necessary if Home is the defaultcontroller, automatically happens!    
-    [LocalizedRoute("fi")]
+    [LocalizedRoute("fi", "koti")]
     [LocalizedRoute("sv")]
     public class HomeController : LocalizationController
     {   
@@ -37,11 +37,6 @@ namespace localization.Controllers
             ViewData["Message"] = "Your contact page.";
 
             return View();
-        }
-
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

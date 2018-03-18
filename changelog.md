@@ -3,6 +3,8 @@
 ### Changes
 * Added global localized errorhandling
 
+### Bugfixes
+
 ### Issues closed
 
 * #5 - [Global errorhandling](issues/5)
