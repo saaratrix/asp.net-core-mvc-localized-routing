@@ -11,12 +11,16 @@ namespace localization.Controllers
     
     public class ErrorController : Controller
     {
+        [Route("Error")]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        // Need the [Route] attribute or the error is just a blank screen it doesn't work
         [Route("/Error/{0}")]
         public IActionResult Index(int error)
         {
-            // Since we're not using LocalizationController this isn't automatically set
-            string culture = CultureInfo.CurrentCulture.Name;
-
             return View();
         }
     }
