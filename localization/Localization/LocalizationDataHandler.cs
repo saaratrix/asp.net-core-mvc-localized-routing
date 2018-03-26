@@ -45,7 +45,7 @@ namespace localization.Localization
                 ControllerRoutes.TryAdd(controllerKey, new CultureControllerData());
             }            
             ControllerRoutes[controllerKey].Names.TryAdd(a_culture, a_route);
-        }        
+        }
 
         /// <summary>
         /// Add the action data.  Will throw exception if the controller doesn't exist
@@ -55,18 +55,18 @@ namespace localization.Localization
         /// <param name="a_culture"></param>
         /// <param name="a_route"></param>
         /// <param name="a_linkName"></param>
-        public static void AddActionData(string a_controller, string a_action, string a_culture, string a_route, string a_linkName)
+        public static void AddActionData(string a_controller, string a_action, string a_culture, string a_route, string a_linkName, List<string> a_routeParameters)
         {            
             string actionKey = a_action.ToLower();           
 
             CultureControllerData controllerData = ControllerRoutes[a_controller.ToLower()];
             if (!controllerData.Actions.ContainsKey(actionKey))
             {
-                controllerData.Actions.TryAdd(actionKey, new CultureActionData());
+                controllerData.Actions.TryAdd(actionKey, new CultureActionData(a_routeParameters));
             }
 
             controllerData.Actions[actionKey].UrlData.TryAdd(a_culture, new CultureUrlData(a_route, a_linkName));
-        }        
+        }
         
         /// <summary>
         /// Get the url for a controller & action based on culture
@@ -78,17 +78,17 @@ namespace localization.Localization
         public static LocalizedUrlResult GetUrl(string a_controller, string a_action, string a_culture)
         {
             LocalizedUrlResult result = new LocalizedUrlResult();
-            string a_controllerKey = a_controller.ToLower();
-            string a_actionKey = a_action.ToLower();
+            string controllerKey = a_controller.ToLower();
+            string actionKey = a_action.ToLower();
 
-            if (ControllerRoutes.ContainsKey(a_controllerKey))
+            if (ControllerRoutes.ContainsKey(controllerKey))
             {
-                CultureControllerData controllerData = ControllerRoutes[a_controllerKey];
+                CultureControllerData controllerData = ControllerRoutes[controllerKey];
 
-                if (controllerData.Actions.ContainsKey(a_actionKey))
+                if (controllerData.Actions.ContainsKey(actionKey))
                 {
                     // Ok now we have the controller name and action data name!
-                    CultureActionData actionData = controllerData.Actions[a_actionKey];
+                    CultureActionData actionData = controllerData.Actions[actionKey];
                     bool removeController = false;
 
                     // Check if culture is default culture
@@ -122,14 +122,14 @@ namespace localization.Localization
                         CultureUrlData linkData = actionData.UrlData.ContainsKey(a_culture) ? actionData.UrlData[a_culture] : actionData.UrlData[DefaultCulture];
                         // If the controller doesn't exist add the culture prefix to it stays in the culture prefix space.
                         string controllerName = controllerData.Names.ContainsKey(a_culture) ? controllerData.Names[a_culture] : a_culture + "/" + a_controller;
-                        string actionName = linkData.Route;
+                        string actionName = linkData.Route;                        
                         // If the controllerName isn't the default one add a /
                         // If not it would be for example /fi/accountLogin    instead of /fi/account/login
-                        if (!a_controller.Equals(DefaultController, StringComparison.CurrentCultureIgnoreCase))
+                        if (!a_controller.Equals(DefaultController, StringComparison.CurrentCultureIgnoreCase) || !actionName.Equals(DefaultAction, StringComparison.CurrentCultureIgnoreCase))
                         {
                             // So it becomes => /culture/controller/                             
                             controllerName += "/";                                                       
-                        }
+                        }                       
 
                         result.Url = "/" + controllerName + actionName;
                         result.LinkName = linkData.Link;
@@ -139,6 +139,49 @@ namespace localization.Localization
                 else
                 {
                     
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// For example: /{controller}/{action}/{param1}/{param2}
+        /// Then it will return values of {param1}/{param2} in the right order based off routeValues
+        /// </summary>
+        /// <param name="controllerName"></param>
+        /// <param name="actionName"></param>
+        /// <param name="routeValues"></param>
+        /// <returns></returns>
+        public static string GetOrderedParameters(string a_controller, string a_action, Dictionary<string, string> a_routeValues)
+        {
+            string controllerKey = a_controller.ToLower();
+            string actionKey = a_action.ToLower();
+
+            string result = "";
+
+            if (ControllerRoutes.ContainsKey(controllerKey))
+            {
+                CultureControllerData controllerData = ControllerRoutes[controllerKey];
+
+                if (controllerData.Actions.ContainsKey(actionKey))
+                {
+                    CultureActionData actionData = controllerData.Actions[actionKey];
+                    if (actionData.ParametersData != null)
+                    {
+                        foreach (string parameter in actionData.ParametersData)
+                        {
+                            if (a_routeValues.ContainsKey(parameter))
+                            {                                
+                                result += "/" + a_routeValues[parameter];                                
+                            }
+                            // Otherwise we found parameter data that isn't accounted for.                           
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 

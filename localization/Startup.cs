@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc;
 
 namespace localization
 {
@@ -78,7 +80,8 @@ namespace localization
                     new UrlCultureProvider(options.SupportedCultures)
                 };
             });
-
+            
+            //services.AddSingleton<IHtmlGenerator, LocalizedHtmlGenerator>();    
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -95,13 +98,12 @@ namespace localization
             }
             else
             {
-                app.UseExceptionHandler();                           
+                app.UseExceptionHandler("/Error");                           
             }
-            
+            // This is to catch 404s e.t.c.
             app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
-
-            app.UseStaticFiles();
+            app.UseStaticFiles();            
 
             app.UseAuthentication();
             app.UseMvc(routes =>

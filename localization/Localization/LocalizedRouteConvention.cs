@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
@@ -104,7 +105,11 @@ namespace localization.Localization
             // Loop over all localized attributes
             foreach (LocalizedRouteAttribute attribute in controllerLocalizations)
             {
-                string template = attribute.Culture + "/" + attribute.Route;
+                string template = attribute.Culture;
+                if (!String.IsNullOrEmpty(attribute.Route))
+                {
+                    template += "/" + attribute.Route;
+                }
                 //CultureAttributeRouteModel localRoute = new CultureAttributeRouteModel(attribute.Culture, template);
                 AttributeRouteModel localRoute = new AttributeRouteModel();
                 localRoute.Template = template;                
@@ -120,12 +125,11 @@ namespace localization.Localization
             // Add a route for the controllers that didn't have localization route attributes with their default name
             foreach (KeyValuePair<string, string> culture in foundCultures)
             {
-                string tempName = controllerName;
-                if (controllerName == LocalizationDataHandler.DefaultController)
+                string template = culture.Value;
+                if (!controllerName.Equals(LocalizationDataHandler.DefaultController, StringComparison.CurrentCultureIgnoreCase))
                 {
-                    tempName = "";                   
+                    template += "/" + controllerName;
                 }
-                string template = culture.Value + "/" + tempName;
                 
                 AttributeRouteModel localRoute = new AttributeRouteModel();
                 localRoute.Template = template;
@@ -154,23 +158,33 @@ namespace localization.Localization
 
                 SelectorModel defaultSelectionModel = action.Selectors.FirstOrDefault(x => x.AttributeRouteModel != null);
 
+                List<string> sortedRouteParameters = new List<string>();
+
                 // If there is no[Route()] Attribute then create one for the route.
                 if (defaultSelectionModel == null || defaultSelectionModel.AttributeRouteModel == null)
                 {
                     AttributeRouteModel attributeRouteModel = new AttributeRouteModel();
 
+                    if (action.Parameters.Count > 0)
+                    {
+                        foreach (ParameterModel parameter in action.Parameters)
+                        {
+                            sortedRouteParameters.Add(parameter.ParameterName.ToLower());
+                        }
+                    }
+
                     if (action.ActionName != LocalizationDataHandler.DefaultAction)
                     {
                         attributeRouteModel.Template = actionName;
                         // Add the action name as it is eg: about will be about!
-                        LocalizationDataHandler.AddActionData(controllerName, actionName, DefaultCulture, actionName, actionName);
+                        LocalizationDataHandler.AddActionData(controllerName, actionName, DefaultCulture, actionName, actionName, sortedRouteParameters);
                     }
                     else
                     {
                         attributeRouteModel.Template = "";
                         // If action name is the default name then just add route as ""
                         // Final result for default controller & action will be "" + ""  => /
-                        LocalizationDataHandler.AddActionData(controllerName, actionName, DefaultCulture, "", controllerName);
+                        LocalizationDataHandler.AddActionData(controllerName, actionName, DefaultCulture, "", controllerName, sortedRouteParameters);
                     }
 
                     AddAttributeRouteModel(action.Selectors, attributeRouteModel);
@@ -193,11 +207,21 @@ namespace localization.Localization
                         // Check if first character starts with {
                         if (actionComponent[0] == '{')
                         {
+                            // Extract the name
+                            // Example of an part: { moo = 5 }
+                            string name = GetParameterName(actionComponent);
+
+                            // TODO: Evaluate if continue should be used for action or controller
+                            if (name != "action" && name != "controller")
+                            {
+                                sortedRouteParameters.Add(name);                                
+                            }
+
                             parameterTemplate += "/" + actionComponents[i];
                         }
                     }
 
-                    LocalizationDataHandler.AddActionData(controllerName, actionName, DefaultCulture, actionName, actionName);
+                    LocalizationDataHandler.AddActionData(controllerName, actionName, DefaultCulture, actionName, actionName, sortedRouteParameters);
                 }
 
                 var actionLocalizationsAttributes = action.Attributes.OfType<LocalizedRouteAttribute>().ToList();
@@ -228,7 +252,7 @@ namespace localization.Localization
                     
                     // Add the localized route for the action
                     // Example of final route:  "fi/koti" + "/" + "ota_yhteyttä"
-                    LocalizationDataHandler.AddActionData(controllerName, actionName, attribute.Culture, attribute.Route, attribute.Link);
+                    LocalizationDataHandler.AddActionData(controllerName, actionName, attribute.Culture, attribute.Route, attribute.Link, sortedRouteParameters);
                 }
             } // End foreach a_controller.Actions
 
@@ -237,6 +261,30 @@ namespace localization.Localization
             {
                 a_controller.Actions.Add(action);
             }            
-        }      
+        }
+
+        // More information: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/routing#route-constraint-reference
+        /// <summary>
+        /// Gets the parameter name from a {parameter}
+        /// </summary>
+        /// <param name="a_actionComponent"></param>
+        /// <returns></returns>
+        public string GetParameterName(string a_actionComponent)
+        {
+            // Example: { param:int = 1 }
+            string name = a_actionComponent.Split(new char[] { '=', ':' }).First();
+            // Remove whitespace since that's valid!    
+            // Also remove the { character
+            name = Regex.Replace(name, @"\s+", "").Substring(1);
+            // If last character is } which it can be if it wasn't split on =:
+            if (name[name.Length - 1] == '}')
+            {
+                // Then remove that!
+                name = name.Remove(name.Length - 1);
+            }
+
+            return name.ToLower();
+
+        }
     }
 }

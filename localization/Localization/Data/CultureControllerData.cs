@@ -16,7 +16,7 @@ namespace localization.Localization
         /// <summary>
         /// The actions in the default culture
         /// </summary>
-        public ConcurrentDictionary<string, CultureActionData> Actions {get;}
+        public ConcurrentDictionary<string, CultureActionData> Actions { get; }
 
         public CultureControllerData()
         {

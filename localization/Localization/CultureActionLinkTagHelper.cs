@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,14 @@ namespace localization.Localization
 {
     [HtmlTargetElement("a", Attributes = CultureAttributeName)]
     public class CultureActionLinkTagHelper : TagHelper
-    {   
+    {
+        LocalizedHtmlGenerator Generator { get; }
+
+        public CultureActionLinkTagHelper(IHtmlGenerator a_generator)
+        {
+            Generator = a_generator as LocalizedHtmlGenerator;
+        }
+
         private const string CultureAttributeName = "cms-culture";        
         /// <summary>
         /// The culture attribute
@@ -19,86 +27,66 @@ namespace localization.Localization
         public string Culture { get; set; }
 
         public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
-        {   
+        {
+            // This can happen if for example the ViewData["culture"] isn't set
+            // like for the errorcontroller which doesn't inherit from LocalizationController.
             if (string.IsNullOrEmpty(Culture))
             {
-                Culture = LocalizationDataHandler.DefaultCulture;
-            }
+                Culture = CultureInfo.CurrentCulture.Name;
+            }            
 
-            // The url for <a href="">
-            string finalHref;
-
-            // Get the original attribute so we can add asp-route-... values
-            TagHelperAttribute hrefAttribute = output.Attributes.FirstOrDefault(x => x.Name == "href");
-            string originalHref = hrefAttribute.Value as string;
-
-            string originalCulture = LocalizationDataHandler.GetCultureFromUrl(originalHref);
-
-            // Get the controllerName and actionName
             string controllerName = context.AllAttributes["asp-controller"].Value as string;
             string actionName = context.AllAttributes["asp-action"].Value as string;
 
-            LocalizedUrlResult result = LocalizationDataHandler.GetUrl(controllerName, actionName, Culture);
+            Dictionary<string, string> routeValues = GetRouteValues(context.AllAttributes);
 
-            // If the two cultures don't match then replace the originalHref URL part with the new result URL
-            // So that the URL is non-destructive of any other parts that's on the URL such as #? or /parameter1/parameter2
-            if (originalCulture != Culture)
+            LocalizedUrlResult urlResult = LocalizationDataHandler.GetUrl(controllerName, actionName, Culture);            
+            if (routeValues != null)
             {
-                LocalizedUrlResult originalResult = LocalizationDataHandler.GetUrl(controllerName, actionName, originalCulture);
-
-                // Use Uri instead and add fragment & query after reconstructing base url?
-                // Currently doesn't take that into account very well
-                string resultUrl = result.Url;
-                // Add / if last character isn't a /
-                if (resultUrl[ resultUrl.Length - 1 ] != '/')
-                {
-                    resultUrl = resultUrl + "/";
-                }
-
-                int originalPartsCount = originalResult.Url.Count(x => x == '/');
-                int partsFound = 0;
-
-                StringBuilder sb = new StringBuilder(resultUrl);
-                foreach (char letter in originalHref)
-                {
-                    if (partsFound <= originalPartsCount)
-                    {
-                        if (letter == '/')
-                        {
-                            partsFound++;
-                        }
-                        else if (letter == '?')
-                        {
-                            partsFound = originalPartsCount;
-                        }
-                        else if (letter == '#')
-                        {
-                            partsFound = originalPartsCount;
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(letter);
-                    }
-                }
-
-                finalHref = sb.ToString();
+                urlResult.Url += LocalizationDataHandler.GetOrderedParameters(controllerName, actionName, routeValues);
             }
-            else
+
+            output.Attributes.SetAttribute("href", urlResult.Url);
+
+            if (urlResult.LinkName != "")
             {
-                // Currently this makes default controller ( Home ) the url:
-                // "/Home/{Action}"   but for finnish & swedish it's just /fi/{Action}  and /sv/{Action}
-                // Meaning the controller name for finnish & swedish is actually /fi/ and /sv/! 
-                finalHref = originalHref;
-            }
-            
-            output.Attributes.SetAttribute("href", finalHref);
-            if (result.LinkName != "")
-            {   
-                output.Content.SetContent(result.LinkName);
+                output.Content.SetContent(urlResult.LinkName);
             }
 
             return Task.FromResult(0);
+        }
+
+        private Dictionary<string, string> GetRouteValues(ReadOnlyTagHelperAttributeList attributes)
+        {
+            bool hasAllRouteData = attributes.TryGetAttribute("asp-all-route-data", out TagHelperAttribute allRouteValues);
+
+            
+            if (hasAllRouteData)
+            {
+                return allRouteValues.Value as Dictionary<string, string>;
+            }
+            else
+            {
+                // You can write the attributes as ASP-ROUTE-  and the name will be ASP-ROUTE so need to ignore case
+                IEnumerable<TagHelperAttribute> routeAttributes = attributes.Where(x => x.Name.StartsWith("asp-route-", StringComparison.OrdinalIgnoreCase));
+
+                if (routeAttributes.Any())
+                {
+
+                    Dictionary<string, string> routeValues = new Dictionary<string, string>();
+
+                    foreach (TagHelperAttribute attribute in routeAttributes)
+                    {
+                        // asp-route- is 10 characters long
+                        string parameter = attribute.Name.Substring(10).ToLower();
+                        routeValues.Add(parameter, attribute.Value as string);
+                    }
+
+                    return routeValues;
+                }
+            }
+
+            return null;
         }
     }
 }

@@ -8,6 +8,11 @@
         culture = CultureInfo.CurrentCulture.Name;
     }
     string brandUrl = localization.Localization.LocalizationDataHandler.GetUrl("home", "index", culture).Url;
+
+    var routeData = new Dictionary<string, string>() {
+            { "test", culture },
+            { "index", 5.ToString() }
+        };
 }
 <!DOCTYPE html>
 <html>
@@ -46,7 +51,8 @@
                     <li><a asp-controller="Home" asp-action="About" cms-culture="@ViewData["culture"]">About</a></li>
                     <li><a asp-controller="Home" asp-action="Contact" cms-culture="@ViewData["culture"]">Contact</a></li>
                     <li><a asp-controller="Local" asp-action="Index" cms-culture="@ViewData["culture"]">Localtest</a></li>
-                    <li><a asp-controller="Local" asp-action="Parameter" asp-route-index="5" asp-route-test="@ViewData["culture"]" cms-culture="@ViewData["culture"]">local param</a></li>
+                    <li><a asp-controller="Local" asp-action="Parameter" asp-route-index="5" asp-ROUTE-test="@ViewData["culture"]" cms-culture="@ViewData["culture"]">local param</a></li>    
+                    <li><a asp-controller="Local" asp-action="Parameter" asp-all-route-data="routeData" cms-culture="@ViewData["culture"]">local param 2</a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
