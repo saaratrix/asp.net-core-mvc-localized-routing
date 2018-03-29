@@ -50,9 +50,9 @@
                     <li><a asp-controller="Home" asp-action="Index" cms-culture="@ViewData["culture"]">Home</a></li>
                     <li><a asp-controller="Home" asp-action="About" cms-culture="@ViewData["culture"]">About</a></li>
                     <li><a asp-controller="Home" asp-action="Contact" cms-culture="@ViewData["culture"]">Contact</a></li>
-                    <li><a asp-controller="Local" asp-action="Index" cms-culture="@ViewData["culture"]">Localtest</a></li>
-                    <li><a asp-controller="Local" asp-action="Parameter" asp-route-index="5" asp-ROUTE-test="@ViewData["culture"]" cms-culture="@ViewData["culture"]">local param</a></li>    
-                    <li><a asp-controller="Local" asp-action="Parameter" asp-all-route-data="routeData" cms-culture="@ViewData["culture"]">local param 2</a></li>
+                    <li><a asp-controller="Example" asp-action="Index" cms-culture="@ViewData["culture"]">Localtest</a></li>
+                    <li><a asp-controller="Example" asp-action="Parameter" asp-route-index="5" asp-ROUTE-test="@ViewData["culture"]" cms-culture="@ViewData["culture"]">local param</a></li>    
+                    <li><a asp-controller="Example" asp-action="Parameter" asp-all-route-data="routeData" cms-culture="@ViewData["culture"]">local param 2</a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>

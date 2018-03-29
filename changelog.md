@@ -3,11 +3,15 @@
 ### Changes
 * Added global localized errorhandling
 
+* Documentation:
+    * Renamed LocalController to ExampleController to make it more clear what it's for.
+
 ### Bugfixes
 
 ### Issues closed
 
-* #5 - [Global errorhandling](../../issues/5)
+* #5    - [Global errorhandling](../../issues/5)
+* #13   - [Rename LocalController to ExampleController](../../issues/13)
 
 # 2.0.1
 

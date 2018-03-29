@@ -16,9 +16,9 @@ namespace localization.Controllers
     [LocalizedRoute("fi", "localFi")]
     // No need to name the route local, That's the name it automatically gets
     //[LocalizedRoute("sv", "local")]
-    public class LocalController : LocalizationController
+    public class ExampleController : LocalizationController
     {        
-        public LocalController()
+        public ExampleController()
         {
              
         }      

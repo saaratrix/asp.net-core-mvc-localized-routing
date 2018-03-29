@@ -59,7 +59,6 @@ namespace localization.Localization
         private Dictionary<string, string> GetRouteValues(ReadOnlyTagHelperAttributeList attributes)
         {
             bool hasAllRouteData = attributes.TryGetAttribute("asp-all-route-data", out TagHelperAttribute allRouteValues);
-
             
             if (hasAllRouteData)
             {
@@ -72,7 +71,6 @@ namespace localization.Localization
 
                 if (routeAttributes.Any())
                 {
-
                     Dictionary<string, string> routeValues = new Dictionary<string, string>();
 
                     foreach (TagHelperAttribute attribute in routeAttributes)
