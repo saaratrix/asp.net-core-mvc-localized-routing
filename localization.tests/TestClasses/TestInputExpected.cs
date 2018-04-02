@@ -11,7 +11,7 @@ namespace localization.tests.TestClasses
 
         public TestInputExpected()
         {
-
+           
         }
 
         public TestInputExpected(object input, object expected)

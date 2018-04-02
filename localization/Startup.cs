@@ -45,7 +45,7 @@ namespace localization
 
             // Set up cultures
             LocalizationDataHandler.DefaultCulture = "en";
-            LocalizationDataHandler.SupportedCultures = new List<string>()
+            LocalizationDataHandler.SupportedCultures = new HashSet<string>()
             {
                 "en",
                 "fi",

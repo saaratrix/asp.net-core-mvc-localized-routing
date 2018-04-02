@@ -15,7 +15,7 @@ namespace localization.tests.UnitTests.Localization
         public static void InitDataHandler()
         {
             LocalizationDataHandler.DefaultCulture = "en";
-            LocalizationDataHandler.SupportedCultures = new List<string>()
+            LocalizationDataHandler.SupportedCultures = new HashSet<string>()
             {
                 "en",
                 "fi",
@@ -31,7 +31,7 @@ namespace localization.tests.UnitTests.Localization
             LocalizationDataHandler.DefaultCulture = "en";
             LocalizationDataHandler.DefaultController = "Home";
             LocalizationDataHandler.DefaultAction = "Index";
-            LocalizationDataHandler.SupportedCultures = new List<string>();
+            LocalizationDataHandler.SupportedCultures = new HashSet<string>();
 
             var type = typeof(LocalizationDataHandler);
             var propInfo = type.GetField("_controllerRoutes", BindingFlags.Static | BindingFlags.NonPublic);            

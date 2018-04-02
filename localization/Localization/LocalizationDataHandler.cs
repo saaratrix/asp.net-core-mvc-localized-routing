@@ -21,7 +21,7 @@ namespace localization.Localization
         /// <summary>
         /// The list of all supported cultures
         /// </summary>
-        public static List<string> SupportedCultures { get; set; }
+        public static HashSet<string> SupportedCultures { get; set; }
 
         public static string DefaultController { get; set; } = "Home";
         public static string DefaultAction { get; set; } = "Index";
