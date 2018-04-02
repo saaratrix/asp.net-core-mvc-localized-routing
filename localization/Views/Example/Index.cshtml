@@ -1,6 +1,6 @@
 ﻿@{
-    ViewData["Title"] = "Local Index";    
+    ViewData["Title"] = Localizer["Example Index"];
 }
 
-Hello world!
-<a asp-controller="home" asp-action="index" cms-culture="@ViewData["culture"]" >English</a>
+@Localizer["Hello world!"]
+<a asp-controller="home" asp-action="index" cms-culture="@ViewData["culture"]">@Localizer["English"]</a>

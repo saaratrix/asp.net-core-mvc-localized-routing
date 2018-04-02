@@ -2,9 +2,11 @@
 
 ### Changes
 * Added global localized errorhandling
+* Added IViewLocalizer injection in _ViewImports.cshtml so there's a Localizer available for every view.
 
 * Documentation:
     * Renamed LocalController to ExampleController to make it more clear what it's for.
+    * Added usages of IViewLocalizer Localizer for the example pages.
 
 ### Bugfixes
 
@@ -12,6 +14,7 @@
 
 * #5    - [Global errorhandling](../../issues/5)
 * #13   - [Rename LocalController to ExampleController](../../issues/13)
+* #14   - [Add example of IViewLocalizer to Example views](../../issues/14)
 
 # 2.0.1
 

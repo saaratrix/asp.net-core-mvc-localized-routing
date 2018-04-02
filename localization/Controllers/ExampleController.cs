@@ -13,9 +13,9 @@ using localization.Models.Local;
 
 namespace localization.Controllers
 {
-    [LocalizedRoute("fi", "localFi")]
-    // No need to name the route local, That's the name it automatically gets
-    //[LocalizedRoute("sv", "local")]
+    [LocalizedRoute("fi", "exampleFi")]
+    // No need to name the route example, That's the name it automatically gets
+    //[LocalizedRoute("sv", "example")]
     public class ExampleController : LocalizationController
     {        
         public ExampleController()
@@ -31,9 +31,9 @@ namespace localization.Controllers
 
         // Add the route for default culture with parameters
         [Route("parameter/{index}/{test}")]
-        // Final route is : /fi/local/param/{index}/{test}
-        [LocalizedRoute("fi", "param")]
         //[HttpGet("parameter/{index}/{test}")]
+        // Final route is : /fi/exampleFi/param/{index}/{test}
+        [LocalizedRoute("fi", "param")]        
         // Sv is automatically set as parameter/{index}/{test}
         //[LocalizedRoute("sv", "parameter")]        
         public IActionResult Parameter(int index, string test)
@@ -43,10 +43,9 @@ namespace localization.Controllers
             ViewData["post"] = false;
             return View();
         }
-
-        // Final route is : /fi/local/param/{index}/{test}
-        // The /{index}/{test} is because the <form> can't handle cultural posts yet :(
+        
         [HttpPost()]
+        // Final route for /fi/ is : /fi/exampleFi/param/{index}/{test}
         [LocalizedRoute("fi", "param")]
         //[ValidateAntiForgeryToken]        
         public IActionResult Parameter(ParameterViewModel model)
