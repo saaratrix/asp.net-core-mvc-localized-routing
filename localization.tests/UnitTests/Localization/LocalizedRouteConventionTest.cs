@@ -1,15 +1,46 @@
 ﻿using localization.Localization;
 using localization.tests.TestClasses;
+using localization.tests.UnitTests.Localization;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
-namespace LocalizationTests.UnitTests.Localization
+namespace LocalizationTests.tests.UnitTests.Localization
 {
     [TestClass]
     public class LocalizedRouteConventionTest
     {
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            LocalizationDataHandlerTest.InitDataHandler();
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            LocalizationDataHandlerTest.ResetDataHandler();
+        }
+
+        [TestMethod]
+        public void ApplyTest()
+        {
+            LocalizedRouteConvention routeConvention = new LocalizedRouteConvention();
+
+            ApplicationModel applicationModel = new ApplicationModel()
+            {
+                
+            };
+
+            routeConvention.Apply(applicationModel);
+
+            Assert.Fail();
+        }
+
         [TestMethod]
         public void GetParameterNameTest()
         {
@@ -25,12 +56,12 @@ namespace LocalizationTests.UnitTests.Localization
                 new TestInputExpected("{0}", "0"),
                 // I'm not sure what to do with this one yet.
                 new TestInputExpected("{*slug}", "*slug")
-            };            
+            };
 
-            for (int i = 0; i < inputsAndExpectations.Count; i++)
+            foreach (TestInputExpected test in inputsAndExpectations)
             {
-                string input = inputsAndExpectations[i].Input as string;
-                string expected = inputsAndExpectations[i].Expected as string;
+                string input = test.Input as string;
+                string expected = test.Expected as string;
                 string name = routeConvention.GetParameterName(input);
 
                 Assert.AreEqual(expected, name);

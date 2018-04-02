@@ -26,14 +26,22 @@ namespace localization.Localization
         public static string DefaultController { get; set; } = "Home";
         public static string DefaultAction { get; set; } = "Index";
 
-
+        // This is for unit testing so that the dictionary can be reset between tests.
+        // Otherwise the property would be an auto property!
+        private static ConcurrentDictionary<string, CultureControllerData> _controllerRoutes = new ConcurrentDictionary<string, CultureControllerData>();
         /// <summary>
         /// All the routes and their cultural representation, example:
         /// home => names { home, koti },  actions { index, about }
         ///     action about => names { about, miestä }
         /// </summary>
         // Will never get modified after initialization is done.
-        private static ConcurrentDictionary<string, CultureControllerData> ControllerRoutes { get; } = new ConcurrentDictionary<string, CultureControllerData>();
+        private static ConcurrentDictionary<string, CultureControllerData> ControllerRoutes
+        {
+            get
+            {
+                return _controllerRoutes;
+            }
+        } 
 
         public static void AddControllerData(string a_controller, string a_culture, string a_route)
         {
@@ -192,6 +200,7 @@ namespace localization.Localization
         /// Get the culture from an url by checking if the href starts with /culture/
         /// So there is possibility of a collision if a controller is called a culture!  
         /// So don't name them cultures!!
+        /// Note: CultureInfo.CurrentCulture is a good way of getting the culture for the current request.
         /// </summary>
         /// <param name="a_url"></param>
         /// <returns></returns>
