@@ -71,7 +71,7 @@ namespace localization.Localization
             if (!controllerData.Actions.ContainsKey(actionKey))
             {
                 controllerData.Actions.TryAdd(actionKey, new CultureActionData(a_routeParameters));
-            }
+            }           
 
             controllerData.Actions[actionKey].UrlData.TryAdd(a_culture, new CultureUrlData(a_route, a_linkName));
         }
@@ -95,6 +95,9 @@ namespace localization.Localization
 
                 if (controllerData.Actions.ContainsKey(actionKey))
                 {
+                    bool isDefaultController = a_controller.Equals(DefaultController, StringComparison.OrdinalIgnoreCase);
+                    bool isDefaultAction = a_action.Equals(DefaultAction, StringComparison.OrdinalIgnoreCase);
+
                     // Ok now we have the controller name and action data name!
                     CultureActionData actionData = controllerData.Actions[actionKey];
                     bool removeController = false;
@@ -102,9 +105,11 @@ namespace localization.Localization
                     // Check if culture is default culture
                     if (a_culture == DefaultCulture)
                     {
+
                         if (a_action.Equals(DefaultAction, StringComparison.CurrentCultureIgnoreCase))
                         {
                             a_action = "";
+                            actionKey = a_action;
 
                             if (a_controller.Equals(DefaultController, StringComparison.CurrentCultureIgnoreCase))
                             {                                
@@ -114,32 +119,41 @@ namespace localization.Localization
 
                         if (!removeController)
                         {
-                            a_controller += "/";
+                            controllerKey += "/";
                         } 
                         else
                         {
-                            a_controller = "";
+                            controllerKey = "";
                         }                        
 
-                        result.Url = "/" + a_controller + a_action;
+                        result.Url = "/" + controllerKey + actionKey;
                         result.LinkName = a_action;  
                     }
                     // If the culture isn't default culture
                     else
-                    {   
+                    {     
                         CultureUrlData linkData = actionData.UrlData.ContainsKey(a_culture) ? actionData.UrlData[a_culture] : actionData.UrlData[DefaultCulture];
-                        // If the controller doesn't exist add the culture prefix to it stays in the culture prefix space.
-                        string controllerName = controllerData.Names.ContainsKey(a_culture) ? controllerData.Names[a_culture] : a_culture + "/" + a_controller;
-                        string actionName = linkData.Route;                        
-                        // If the controllerName isn't the default one add a /
-                        // If not it would be for example /fi/accountLogin    instead of /fi/account/login
-                        if (!a_controller.Equals(DefaultController, StringComparison.CurrentCultureIgnoreCase) || !actionName.Equals(DefaultAction, StringComparison.CurrentCultureIgnoreCase))
-                        {
-                            // So it becomes => /culture/controller/                             
-                            controllerName += "/";                                                       
-                        }                       
 
-                        result.Url = "/" + controllerName + actionName;
+                        if (isDefaultController && isDefaultAction)
+                        {
+                            result.Url = "/" + a_culture;
+                        }
+                        else
+                        {                            
+                            // If the controller doesn't exist add the culture prefix to it stays in the culture prefix space.
+                            a_controller = controllerData.Names.ContainsKey(a_culture) ? controllerData.Names[a_culture] : a_culture + "/" + a_controller;
+                            a_action = linkData.Route;
+                            // If the controllerName isn't the default one add a /
+                            // If not it would be for example /fi/accountLogin    instead of /fi/account/login
+                            if (!isDefaultController || !isDefaultAction)
+                            {
+                                // So it becomes => /culture/controller/                             
+                                a_controller += "/";
+                            }
+
+                            result.Url = "/" + a_controller + a_action;
+                        }
+                        
                         result.LinkName = linkData.Link;
                     }                    
                 }
@@ -200,7 +214,7 @@ namespace localization.Localization
         /// Get the culture from an url by checking if the href starts with /culture/
         /// So there is possibility of a collision if a controller is called a culture!  
         /// So don't name them cultures!!
-        /// Note: CultureInfo.CurrentCulture is a good way of getting the culture for the current request.
+        /// Note: CultureInfo.CurrentCulture.Name is a good way of getting the culture for the current request.
         /// </summary>
         /// <param name="a_url"></param>
         /// <returns></returns>
