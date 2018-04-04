@@ -59,11 +59,11 @@ namespace localization.tests.UnitTests.Localization
         {
             string defaultCulture = LocalizationDataHandler.DefaultCulture;
             // Controllers
-            LocalizationDataHandler.AddControllerData("Home", defaultCulture, "/Home");
+            LocalizationDataHandler.AddControllerData("Home", defaultCulture, "Home");
             LocalizationDataHandler.AddControllerData("Home", "fi", "fi/Koti");
             LocalizationDataHandler.AddControllerData("Home", "sv", "sv/hem");
 
-            LocalizationDataHandler.AddControllerData("Test", defaultCulture, "/Test");
+            LocalizationDataHandler.AddControllerData("Test", defaultCulture, "Test");
             LocalizationDataHandler.AddControllerData("Test", "fi", "fi/Testi");
             LocalizationDataHandler.AddControllerData("Test", "sv", "sv/Test");
 
@@ -72,48 +72,55 @@ namespace localization.tests.UnitTests.Localization
             //LocalizationDataHandler.AddActionData("Home", "Index", "fi", "/", "Index", new List<string>());
             LocalizationDataHandler.AddActionData("Home", "Index", "sv", "", "Index", new List<string>());
 
-            LocalizationDataHandler.AddActionData("Home", "About", defaultCulture, "/about", "About", new List<string>());
-            LocalizationDataHandler.AddActionData("Home", "About", "fi", "/miestä", "Miestä", new List<string>());
-            LocalizationDataHandler.AddActionData("Home", "About", "sv", "/Om", "Om", new List<string>());
+            LocalizationDataHandler.AddActionData("Home", "About", defaultCulture, "about", "About", new List<string>());
+            LocalizationDataHandler.AddActionData("Home", "About", "fi", "miestä", "Miestä", new List<string>());
+            LocalizationDataHandler.AddActionData("Home", "About", "sv", "Om", "Om", new List<string>());
 
-            LocalizationDataHandler.AddActionData("Test", "TestAction", defaultCulture, "/testaction", "Test Action", new List<string>());
-            LocalizationDataHandler.AddActionData("Test", "TestAction", "fi", "/TestiToiminta", "Testi Toiminta", new List<string>());
-            LocalizationDataHandler.AddActionData("Test", "TestAction", "sv", "/TestHandling", "Testi Toiminta", new List<string>());
+            LocalizationDataHandler.AddActionData("Test", "TestAction", defaultCulture, "testaction", "Test Action", new List<string>());
+            LocalizationDataHandler.AddActionData("Test", "TestAction", "fi", "TestiToiminta", "Testi Toiminta", new List<string>());
+            LocalizationDataHandler.AddActionData("Test", "TestAction", "sv", "TestHandling", "Testi Handling", new List<string>());
 
             List<TestInputExpected> inputsAndExpectations = new List<TestInputExpected>()
             {
                 // Default actions
-                new TestInputExpected(new TestActionControllerData("home", "index", null, defaultCulture), "/"),
-                new TestInputExpected(new TestActionControllerData("hOme", "index", null, "fi"), "/fi"),
-                new TestInputExpected(new TestActionControllerData("hoMe", "INdex", null, "sv"), "/sv"),
+                new TestInputExpected(new TestActionControllerData("home", "index", null, defaultCulture), new LocalizedUrlResult() { Url = "/", LinkName = "" }),
+                new TestInputExpected(new TestActionControllerData("hOme", "index", null, "fi"), new LocalizedUrlResult() { Url = "/fi", LinkName = "Index" }),
+                new TestInputExpected(new TestActionControllerData("hoMe", "INdex", null, "sv"), new LocalizedUrlResult() { Url = "/sv", LinkName = "Index" }),
                 // About actions
-                new TestInputExpected(new TestActionControllerData("home", "about", null, defaultCulture), "/Home/about"),
-                new TestInputExpected(new TestActionControllerData("hOme", "about", null, "fi"), "/fi/Koti/miestä"),
-                new TestInputExpected(new TestActionControllerData("hoMe", "about", null, "sv"), "/sv/hem/Om"),
+                new TestInputExpected(new TestActionControllerData("home", "about", null, defaultCulture), new LocalizedUrlResult() { Url = "/Home/about", LinkName = "" }),
+                new TestInputExpected(new TestActionControllerData("hOme", "about", null, "fi"), new LocalizedUrlResult() { Url = "/fi/Koti/miestä", LinkName = "Miestä" }),
+                new TestInputExpected(new TestActionControllerData("hoMe", "about", null, "sv"), new LocalizedUrlResult() { Url = "/sv/hem/Om", LinkName = "Om" }),
                 // Test actions
-                new TestInputExpected(new TestActionControllerData("tESt", "teSTAction"), "/Test/testaction"),
-                new TestInputExpected(new TestActionControllerData("test", "testAction", null, "fi"), "/fi/Testi/TestiToiminta"),
-                new TestInputExpected(new TestActionControllerData("teST", "testActIOn", null, "sv"), "/sv/Test/TestHandling"),                
+                new TestInputExpected(new TestActionControllerData("tESt", "teSTAction"), new LocalizedUrlResult() { Url = "/Test/testaction", LinkName = "" }),
+                new TestInputExpected(new TestActionControllerData("test", "testAction", null, "fi"), new LocalizedUrlResult() { Url = "/fi/Testi/TestiToiminta", LinkName = "Testi Toiminta" }),
+                new TestInputExpected(new TestActionControllerData("teST", "testActIOn", null, "sv"), new LocalizedUrlResult() { Url = "/sv/Test/TestHandling", LinkName = "Testi Handling" }),
+                
+                // Fails
+            };
+
+            List<TestActionControllerData> throwingTests = new List<TestActionControllerData>()
+            {
+                // Invalid controller
+                new TestActionControllerData("homez", "index", null, defaultCulture),
+                // Invalid action
+                new TestActionControllerData("home", "notindex", null, defaultCulture)                
             };
 
             foreach (var test in inputsAndExpectations)
             {
                 var input = test.Input as TestActionControllerData;
-                string expected = test.Expected as string;
+                LocalizedUrlResult expected = (LocalizedUrlResult)test.Expected;
                 var result = LocalizationDataHandler.GetUrl(input.Controller, input.Action, input.Culture);
 
-                Assert.AreEqual(expected, result.Url);
-            }
+                Assert.AreEqual(expected.Url, result.Url);
+                Assert.AreEqual(expected.LinkName, result.LinkName, String.Format("For {0}/{1}", input.Controller, input.Action));
+            }    
             
-            Assert.Fail();
-        }
-
-        // Tests the link
-        [TestMethod]
-        public void GetUrlLinkTest()
-        {
-            Assert.Fail();
-        }
+            foreach (var test in throwingTests)
+            {
+                Assert.ThrowsException<ArgumentException>(() => LocalizationDataHandler.GetUrl(test.Controller, test.Action, test.Culture));                
+            }
+        }                
 
         [TestMethod]
         public void GetOrderedParametersTest()
