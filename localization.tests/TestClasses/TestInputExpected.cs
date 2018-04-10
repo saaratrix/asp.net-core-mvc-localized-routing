@@ -14,10 +14,10 @@ namespace localization.tests.TestClasses
            
         }
 
-        public TestInputExpected(object input, object expected)
+        public TestInputExpected(object a_input, object a_expected)
         {
-            Input = input;
-            Expected = expected;
+            Input = a_input;
+            Expected = a_expected;
         }
     }
 }

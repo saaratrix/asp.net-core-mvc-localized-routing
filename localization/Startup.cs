@@ -33,8 +33,7 @@ namespace localization
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            ConfigureDatabase(services);
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -57,7 +56,7 @@ namespace localization
             services.AddMvc(options =>
             {
                 options.Conventions.Add(new LocalizedRouteConvention());
-            })            
+            })
             // Views.Shared._Layout is for the /Views/Shared/_Layout.cshtml file
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
             // Add support for localizing strings in data annotations (e.g. validation messages) via the
@@ -82,6 +81,13 @@ namespace localization
             });
             
             //services.AddSingleton<IHtmlGenerator, LocalizedHtmlGenerator>();    
+        }
+
+        // This is so we can override the database configuration for tests
+        public virtual void ConfigureDatabase(IServiceCollection services)
+        {
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
