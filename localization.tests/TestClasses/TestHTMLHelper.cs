@@ -10,7 +10,7 @@ namespace localization.tests.TestClasses
 {
     class TestHTMLHelper
     {
-        public List<(string Href, string Text)> GetNavLinks(string a_htmlContent)
+        public List<(string Href, string Link)> GetNavLinks(string a_htmlContent)
         {
             List<(string, string)> result = new List<(string, string)>();
 

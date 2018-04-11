@@ -58,8 +58,7 @@ namespace localization.tests.Integration
                 new TestInputExpected("/Home/About", null),
                 new TestInputExpected("/hOmE/cOntAcT/", null),
                 new TestInputExpected("/example", null),
-                new TestInputExpected("/example/", null),
-
+                new TestInputExpected("/exampleFi/param/1337/english", null),
             };
 
             // Also test some failed routes
@@ -68,22 +67,91 @@ namespace localization.tests.Integration
                 "/Home/somewrongaction"
             };
 
-            List<(string Href, string Text)> navigationUrls = new List<(string Href, string Text)>()
+            List<(string Href, string Link)> navigationUrls = new List<(string Href, string Text)>()
             {
-                ( "/", ""),
-                ( "/Home/About", ""),
-                ( "/Home/Contact", ""),
-                ( "/Example", ""),
-                ( "/Example/Parameter/5/en", ""),
-                ( "/Example/Parameter/5/en", "")
+                ( "/", "Home"),
+                ( "/Home/About", "About"),
+                ( "/Home/Contact", "Contact"),
+                ( "/Example", "Example test"),
+                ( "/Example/Parameter/5/en", "example param"),
+                ( "/Example/Parameter/5/en", "example param 2")
             };
 
+            await TestCulture(inputsAndExpectations, failedRoutes, "/", navigationUrls);
+        }
+
+        [TestMethod]
+        public async Task TestFinnishCultures()
+        {
+            // Test HomeController (default), ExampleController and Error routes
+            List<TestInputExpected> inputsAndExpectations = new List<TestInputExpected>()
+            {
+                new TestInputExpected("/fi", null),
+                new TestInputExpected("/fi/koti/mIEStä", null),
+                new TestInputExpected("/fi/KoTi/ota_yhteyttä", null),
+                new TestInputExpected("/fi/exampleFi", null),
+                new TestInputExpected("/fi/exampleFi/param/1337/finnish", null),
+            };
+
+            // Also test some failed routes
+            List<string> failedRoutes = new List<string>()
+            {
+                "/fi/koti/somewrongaction"
+            };
+
+            List<(string Href, string Link)> navigationUrls = new List<(string Href, string Text)>()
+            {
+                ( "/fi", "Koti"),
+                ( "/fi/koti/miestä", "Miestä"),
+                ( "/fi/koti/ota_yhteyttä", "Ota Yhteyttä"),
+                ( "/fi/exampleFi", "Example test"),
+                ( "/fi/exampleFi/param/5/fi", "example param"),
+                ( "/fi/exampleFi/param/5/fi", "example param 2")
+            };
+
+            await TestCulture(inputsAndExpectations, failedRoutes, "/fi", navigationUrls);
+        }
+
+        [TestMethod]
+        public async Task TestSwedishCultures()
+        {
+            // Test HomeController (default), ExampleController and Error routes
+            List<TestInputExpected> inputsAndExpectations = new List<TestInputExpected>()
+            {
+                new TestInputExpected("/sv", null),
+                new TestInputExpected("/sv/Home/om", null),
+                new TestInputExpected("/sv/Home/kontakta-oss/", null),
+                new TestInputExpected("/sv/example", null),
+                new TestInputExpected("/sv/example/param/1337/swedish", null),
+            };
+
+            // Also test some failed routes
+            List<string> failedRoutes = new List<string>()
+            {
+                "/sv/hem/somewrongaction"
+            };
+
+            List<(string Href, string Link)> navigationUrls = new List<(string Href, string Text)>()
+            {
+                ( "/sv", "Home"),
+                ( "/sv/Home/om", "Om"),
+                ( "/sv/Home/kontakta-oss", "Kontakta Oss"),
+                ( "/sv/example", "Example test"),
+                ( "/sv/example/param/5/sv", "example param"),
+                ( "/sv/example/param/5/sv", "example param 2")
+            };
+
+            await TestCulture(inputsAndExpectations, failedRoutes, "/sv", navigationUrls);
+        }
+
+        private async Task TestCulture(List<TestInputExpected> a_inputsAndExpectations, List<string> a_failedRoutes, string a_navigationUrl, List<(string Href, string Link)> a_navLinksExpected)
+        {
             TestHTMLHelper testHTMLHelper = new TestHTMLHelper();
             HttpResponseMessage response;
             string content;
 
             /* Check ok routes! */
-            foreach (var test in inputsAndExpectations)
+            foreach (var test in a_inputsAndExpectations)
             {
                 string inputUrl = test.Input as string;
 
@@ -94,7 +162,7 @@ namespace localization.tests.Integration
             }
 
             /* Check bad routes */
-            foreach (var failUrl in failedRoutes)
+            foreach (var failUrl in a_failedRoutes)
             {
                 response = await _client.GetAsync(failUrl);
                 content = await response.Content.ReadAsStringAsync();
@@ -103,32 +171,22 @@ namespace localization.tests.Integration
             }
 
             /* Check the Nav Links */
-            response = await _client.GetAsync("/");
+            response = await _client.GetAsync(a_navigationUrl);
             content = await response.Content.ReadAsStringAsync();
 
             var navLinks = testHTMLHelper.GetNavLinks(content);
 
             for (int i = 0; i < navLinks.Count; i++)
             {
-                string expectedHref = navigationUrls[i].Href;
-                string inputHref = navLinks[i].Href;
+                string expectedHref = a_navLinksExpected[i].Href;
+                string expectedLink = a_navLinksExpected[i].Link;
 
-                Assert.AreEqual(expectedHref, inputHref);
+                string responseHref = navLinks[i].Href;
+                string responseLink = navLinks[i].Link;
+
+                Assert.AreEqual(expectedHref, responseHref);
+                Assert.AreEqual(expectedLink, responseLink);
             }
-
-            Assert.Fail();
-        }
-
-        [TestMethod]
-        public async Task TestFinnishCultures()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod]
-        public async Task TestSwedishCultures()
-        {
-            Assert.Fail();
         }
     }
 }
