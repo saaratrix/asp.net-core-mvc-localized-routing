@@ -2,6 +2,9 @@
 using localization.tests.TestClasses;
 using localization.tests.UnitTests.Localization;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Concurrent;
@@ -29,12 +32,25 @@ namespace LocalizationTests.tests.UnitTests.Localization
         [TestMethod]
         public void ApplyTest()
         {
-            LocalizedRouteConvention routeConvention = new LocalizedRouteConvention();
+            // File that generates the controller models
+            // https://github.com/aspnet/Mvc/blob/dev/src/Microsoft.AspNetCore.Mvc.Core/Internal/DefaultApplicationModelProvider.cs
+            // DefaultApplicationModelProvider is created here:
+            // https://github.com/aspnet/Mvc/blob/dev/src/Microsoft.AspNetCore.Mvc.Core/DependencyInjection/MvcCoreServiceCollectionExtensions.cs
+
+            DefaultApplicationModelProvider test = new DefaultApplicationModelProvider()
+
+
+            LocalizedRouteConvention routeConvention = new LocalizedRouteConvention();            
 
             ApplicationModel applicationModel = new ApplicationModel()
             {
-                
+                ApiExplorer = new ApiExplorerModel(),
             };
+
+            applicationModel.Filters.Add(new UnsupportedContentTypeFilter());
+            applicationModel.Filters.Add(new SaveTempDataAttribute());
+
+            //ControllerModel controllerModel = new ControllerModel();
 
             routeConvention.Apply(applicationModel);
 
