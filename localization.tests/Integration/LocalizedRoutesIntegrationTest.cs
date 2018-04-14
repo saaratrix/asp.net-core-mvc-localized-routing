@@ -58,7 +58,7 @@ namespace localization.tests.Integration
                 new TestInputExpected("/Home/About", null),
                 new TestInputExpected("/hOmE/cOntAcT/", null),
                 new TestInputExpected("/example", null),
-                new TestInputExpected("/exampleFi/param/1337/english", null),
+                new TestInputExpected("/example/param/1337/english", null),
             };
 
             // Also test some failed routes
@@ -90,7 +90,7 @@ namespace localization.tests.Integration
                 new TestInputExpected("/fi/koti/mIEStä", null),
                 new TestInputExpected("/fi/KoTi/ota_yhteyttä", null),
                 new TestInputExpected("/fi/exampleFi", null),
-                new TestInputExpected("/fi/exampleFi/param/1337/finnish", null),
+                new TestInputExpected("/fi/exampleFi/param/100/finnish", null),
             };
 
             // Also test some failed routes
@@ -122,7 +122,7 @@ namespace localization.tests.Integration
                 new TestInputExpected("/sv/Home/om", null),
                 new TestInputExpected("/sv/Home/kontakta-oss/", null),
                 new TestInputExpected("/sv/example", null),
-                new TestInputExpected("/sv/example/param/1337/swedish", null),
+                new TestInputExpected("/sv/example/param/24/swedish", null),
             };
 
             // Also test some failed routes
@@ -184,8 +184,8 @@ namespace localization.tests.Integration
                 string responseHref = navLinks[i].Href;
                 string responseLink = navLinks[i].Link;
 
-                Assert.AreEqual(expectedHref, responseHref);
-                Assert.AreEqual(expectedLink, responseLink);
+                Assert.AreEqual(expectedHref, responseHref, "Href for " + i.ToString());
+                Assert.AreEqual(expectedLink, responseLink, "Link for " + i.ToString());
             }
         }
     }
