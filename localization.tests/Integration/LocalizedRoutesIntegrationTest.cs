@@ -121,8 +121,8 @@ namespace localization.tests.Integration
                 new TestInputExpected("/sv", null),
                 new TestInputExpected("/sv/Home/om", null),
                 new TestInputExpected("/sv/Home/kontakta-oss/", null),
-                new TestInputExpected("/sv/example", null),
-                new TestInputExpected("/sv/example/param/24/swedish", null),
+                new TestInputExpected("/sv/Example", null),
+                new TestInputExpected("/sv/Example/parameter/24/swedish", null),
             };
 
             // Also test some failed routes
@@ -136,9 +136,9 @@ namespace localization.tests.Integration
                 ( "/sv", "Home"),
                 ( "/sv/Home/om", "Om"),
                 ( "/sv/Home/kontakta-oss", "Kontakta Oss"),
-                ( "/sv/example", "Example test"),
-                ( "/sv/example/param/5/sv", "example param"),
-                ( "/sv/example/param/5/sv", "example param 2")
+                ( "/sv/Example/", "Example"),
+                ( "/sv/Example/Parameter/5/sv", "example param"),
+                ( "/sv/Example/Parameter/5/sv", "example param 2")
             };
 
             await TestCulture(inputsAndExpectations, failedRoutes, "/sv", navigationUrls);

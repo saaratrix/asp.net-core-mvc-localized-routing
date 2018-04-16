@@ -21,7 +21,8 @@ namespace localization.Localization
         /// </summary>
         public string Culture { get; set; }
         /// <summary>
-        /// The route, no need for / 
+        /// The route, no need for /.
+        /// It is case sensitive.
         /// </summary>
         public string Route { get; set; }
         /// <summary>
@@ -66,17 +67,30 @@ namespace localization.Localization
                 
             // If the link is null then set it to the route
             if (a_link == null)
-            {
-                CultureInfo cultureInfo = new CultureInfo(Culture, false);
-                TextInfo textInfo = cultureInfo.TextInfo;
-                // Do the opposite that route does,  replace the whitespace replacement characters with whitespace!
-                Link = textInfo.ToTitleCase(Route.Replace(WhiteSpaceReplacement, ' '));                
+            {   
+                Link = ConvertRouteToLink(Route, Culture);         
             }
             else
             {
                 Link = a_link;                
-            }
-                     
+            }                     
         }
+
+        /// <summary>
+        /// Convert a route value to a link friendly value.
+        /// Example of "some_route" converts to "Some Route"
+        /// </summary>
+        /// <param name="route"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
+        public static string ConvertRouteToLink(string route, string culture)
+        {
+            CultureInfo cultureInfo = new CultureInfo(culture, false);
+            TextInfo textInfo = cultureInfo.TextInfo;
+            route = route.Replace(WhiteSpaceReplacement, ' ');
+            // Do the opposite that route does,  replace the whitespace replacement characters with whitespace!
+            string link = textInfo.ToTitleCase(route);
+            return link;
+        }        
     }
 }
