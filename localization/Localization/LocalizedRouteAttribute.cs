@@ -63,12 +63,12 @@ namespace localization.Localization
             Culture = a_culture;
             Route = a_route;
             // Replace all the spaces with the whitespace replacement character
-            Route = Route.Replace(' ', WhiteSpaceReplacement);
-                
+            Route = Route.Replace(' ', WhiteSpaceReplacement);            
+            
             // If the link is null then set it to the route
-            if (a_link == null)
+            if (String.IsNullOrEmpty(a_link))
             {   
-                Link = ConvertRouteToLink(Route, Culture);         
+                Link = ConvertRouteToLink(Culture, Route);         
             }
             else
             {
@@ -83,7 +83,7 @@ namespace localization.Localization
         /// <param name="route"></param>
         /// <param name="culture"></param>
         /// <returns></returns>
-        public static string ConvertRouteToLink(string route, string culture)
+        public static string ConvertRouteToLink(string culture, string route)
         {
             CultureInfo cultureInfo = new CultureInfo(culture, false);
             TextInfo textInfo = cultureInfo.TextInfo;

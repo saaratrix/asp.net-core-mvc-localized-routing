@@ -307,7 +307,7 @@ namespace localization.Localization
                     // Then we extract the Link name from the Route
                     else if (!String.IsNullOrWhiteSpace(attribute.Route))
                     {
-                        name = LocalizedRouteAttribute.ConvertRouteToLink(attribute.Route, culture);
+                        name = LocalizedRouteAttribute.ConvertRouteToLink(culture, attribute.Route);
                     }
 
                     break;
@@ -380,9 +380,6 @@ namespace localization.Localization
             }
 
             return name.ToLower();
-
         }
-
-        
     }
 }
