@@ -29,7 +29,33 @@ namespace LocalizationTests.tests.UnitTests.Localization
         [TestMethod]
         public void GetLocalizedControllerNameTest()
         {
-            Assert.Fail();
+            var type = typeof(TestController);
+            ControllerModel testController = new ControllerModel(type.GetTypeInfo(), new List<LocalizedRouteAttribute>()
+            {
+                new LocalizedRouteAttribute("fi", "Testi"),
+                new LocalizedRouteAttribute("sv"),
+                new LocalizedRouteAttribute("ja", "テスト")
+            });
+            testController.ControllerName = "Test";
+
+            List<TestInputExpected> inputsAndExpectations = new List<TestInputExpected>()
+            {
+                new TestInputExpected(new GetLocalizedControllerNameInput(testController, "en"), "Test"),
+                new TestInputExpected(new GetLocalizedControllerNameInput(testController, "fi"), "Testi"),
+                new TestInputExpected(new GetLocalizedControllerNameInput(testController, "sv"), "Test"),
+                new TestInputExpected(new GetLocalizedControllerNameInput(testController, "ja"), "テスト"),
+                new TestInputExpected(new GetLocalizedControllerNameInput(testController, "not_a_culture"), "Test")
+            };
+
+            foreach (var test in inputsAndExpectations)
+            {
+                var input = test.Input as GetLocalizedControllerNameInput;
+                var expected = test.Expected as string;
+
+                string result = _localizedRouteConvention.GetLocalizedControllerName(input.ControllerModel, input.Culture);
+
+                Assert.AreEqual(expected, result, "For culture: " + input.Culture);
+            }
         }
 
         [TestMethod]
@@ -78,6 +104,18 @@ namespace LocalizationTests.tests.UnitTests.Localization
                 string name = _localizedRouteConvention.GetParameterName(input);
 
                 Assert.AreEqual(expected, name);
+            }
+        }
+
+        private class GetLocalizedControllerNameInput
+        {
+            public ControllerModel ControllerModel { get; set; }
+            public string Culture { get; set; }
+
+            public GetLocalizedControllerNameInput(ControllerModel controllerModel, string culture)
+            {
+                ControllerModel = controllerModel;
+                Culture = culture;
             }
         }
 
