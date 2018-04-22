@@ -26,7 +26,7 @@ namespace localization.Controllers
         public IActionResult Index()
         {           
             return View();
-        }
+        }       
 
         // Add the route for default culture with parameters
         [Route("parameter/{index}/{test}")]

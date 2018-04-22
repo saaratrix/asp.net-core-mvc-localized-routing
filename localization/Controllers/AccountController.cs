@@ -18,6 +18,7 @@ using localization.Localization;
 namespace localization.Controllers
 {
     [Authorize]
+    [Route("[controller]/[action]")]
     [LocalizedRoute("sv", "konto")]
     public class AccountController : LocalizationController
     {

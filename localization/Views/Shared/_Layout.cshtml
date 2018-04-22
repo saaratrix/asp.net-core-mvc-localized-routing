@@ -43,14 +43,14 @@
                 @* This will be wrong for default culture because no routes are set up for /en *@
                 <a href="@brandUrl" class="navbar-brand">@Localizer["Localization"]</a>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
+            <div class="navbar-collapse collapse">                
+                <ul class="nav navbar-nav">                    
                     <li><a asp-controller="Home" asp-action="Index" cms-culture="@ViewData["culture"]">Home</a></li>
                     <li><a asp-controller="Home" asp-action="About" cms-culture="@ViewData["culture"]">About</a></li>
                     <li><a asp-controller="Home" asp-action="Contact" cms-culture="@ViewData["culture"]">Contact</a></li>
                     <li><a asp-controller="Example" asp-action="Index" cms-culture="@ViewData["culture"]">Example test</a></li>
-                    <li><a asp-controller="Example" asp-action="Parameter" asp-route-index="5" asp-ROUTE-test="@ViewData["culture"]" cms-culture="@ViewData["culture"]">example param</a></li>    
-                    <li><a asp-controller="Example" asp-action="Parameter" asp-all-route-data="routeData" cms-culture="@ViewData["culture"]">example param 2</a></li>
+                    <li><a asp-controller="Example" asp-action="Parameter" asp-route-index="5" asp-ROUTE-test="@ViewData["culture"]" cms-culture="">example param</a></li>    
+                    <li><a asp-controller="Example" asp-action="Parameter" asp-all-route-data="routeData" cms-culture="" cms-keep-link="true">example param 2</a></li>                    
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>

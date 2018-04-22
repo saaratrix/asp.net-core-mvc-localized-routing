@@ -17,6 +17,12 @@ namespace localization.Localization
         private const char WhiteSpaceReplacement = '_';
 
         /// <summary>
+        /// The characters to split a route on to generate a more link friendly url.
+        /// For example some_route => Some Route
+        /// </summary>
+        private static char[] RouteToLinkSplitLetters = new char[] { '_', '-' };
+
+        /// <summary>
         /// The culture string representation, en, en-Us e.t.c.!
         /// </summary>
         public string Culture { get; set; }
@@ -87,9 +93,30 @@ namespace localization.Localization
         {
             CultureInfo cultureInfo = new CultureInfo(culture, false);
             TextInfo textInfo = cultureInfo.TextInfo;
-            route = route.Replace(WhiteSpaceReplacement, ' ');
-            // Do the opposite that route does,  replace the whitespace replacement characters with whitespace!
-            string link = textInfo.ToTitleCase(route);
+
+            string link = "";
+            string[] routeParts = route.Split(RouteToLinkSplitLetters);
+
+            for (int i = 0; i < routeParts.Length; i++)
+            {
+                string part = routeParts[i];
+                if (part.Length == 0)
+                {
+                    continue;
+                }
+                
+                if (link.Length > 0 && link[link.Length - 1] != WhiteSpaceReplacement)
+                {
+                    link += " ";
+                }
+
+                link += Char.ToUpper(part[0], cultureInfo);
+                if (part.Length > 1)
+                {
+                    link += part.Substring(1);
+                }
+            }
+           
             return link;
         }        
     }

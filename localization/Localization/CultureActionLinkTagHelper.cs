@@ -10,21 +10,19 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 namespace localization.Localization
 {
     [HtmlTargetElement("a", Attributes = CultureAttributeName)]
+    [HtmlTargetElement("a", Attributes = KeepLinkAttributeName)]
     public class CultureActionLinkTagHelper : TagHelper
     {
-        LocalizedHtmlGenerator Generator { get; }
-
-        public CultureActionLinkTagHelper(IHtmlGenerator a_generator)
-        {
-            Generator = a_generator as LocalizedHtmlGenerator;
-        }
-
-        private const string CultureAttributeName = "cms-culture";        
+        private const string CultureAttributeName = "cms-culture";
+        private const string KeepLinkAttributeName = "cms-keep-link";
         /// <summary>
         /// The culture attribute
         /// </summary>        
         [HtmlAttributeName(CultureAttributeName)]
         public string Culture { get; set; }
+
+        [HtmlAttributeName(KeepLinkAttributeName)]
+        public bool KeepLink { get; set; } = false;
 
         public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
@@ -48,7 +46,7 @@ namespace localization.Localization
 
             output.Attributes.SetAttribute("href", urlResult.Url);
 
-            if (urlResult.LinkName != "")
+            if (!KeepLink && urlResult.LinkName != "")
             {
                 output.Content.SetContent(urlResult.LinkName);
             }

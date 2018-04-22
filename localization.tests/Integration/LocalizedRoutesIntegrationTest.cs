@@ -10,6 +10,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace localization.tests.Integration
 {
@@ -104,8 +105,8 @@ namespace localization.tests.Integration
                 ( "/fi", "Koti"),
                 ( "/fi/koti/miestä", "Miestä"),
                 ( "/fi/koti/ota_yhteyttä", "Ota Yhteyttä"),
-                ( "/fi/exampleFi", "Example test"),
-                ( "/fi/exampleFi/param/5/fi", "example param"),
+                ( "/fi/exampleFi", "ExampleFi"),
+                ( "/fi/exampleFi/param/5/fi", "Param"),
                 ( "/fi/exampleFi/param/5/fi", "example param 2")
             };
 
@@ -136,8 +137,8 @@ namespace localization.tests.Integration
                 ( "/sv", "Home"),
                 ( "/sv/Home/om", "Om"),
                 ( "/sv/Home/kontakta-oss", "Kontakta Oss"),
-                ( "/sv/Example/", "Example"),
-                ( "/sv/Example/Parameter/5/sv", "example param"),
+                ( "/sv/Example", "Example"),
+                ( "/sv/Example/Parameter/5/sv", "Parameter"),
                 ( "/sv/Example/Parameter/5/sv", "example param 2")
             };
 
@@ -180,9 +181,9 @@ namespace localization.tests.Integration
             {
                 string expectedHref = a_navLinksExpected[i].Href;
                 string expectedLink = a_navLinksExpected[i].Link;
-
-                string responseHref = navLinks[i].Href;
-                string responseLink = navLinks[i].Link;
+                // &#xE4; => ä e.t.c.
+                string responseHref = HttpUtility.HtmlDecode(navLinks[i].Href);
+                string responseLink = HttpUtility.HtmlDecode(navLinks[i].Link);
 
                 Assert.AreEqual(expectedHref, responseHref, "Href for " + i.ToString());
                 Assert.AreEqual(expectedLink, responseLink, "Link for " + i.ToString());

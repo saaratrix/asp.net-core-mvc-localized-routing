@@ -25,7 +25,8 @@ namespace localization.tests.UnitTests.Localization
             {
                 new TestInputExpected(new LocalizedRouteData("en", "some route", ""), new LocalizedRouteData("en", "some_route", "Some Route")),
                 new TestInputExpected(new LocalizedRouteData("fi", "Testi_testi", ""), new LocalizedRouteData("fi", "Testi_testi", "Testi Testi")),
-                new TestInputExpected(new LocalizedRouteData("sv", "en-test-route", ""), new LocalizedRouteData("sv", "en-test-route", "En-Test-Route"))
+                new TestInputExpected(new LocalizedRouteData("sv", "en-test-route", ""), new LocalizedRouteData("sv", "en-test-route", "En Test Route")),
+                new TestInputExpected(new LocalizedRouteData("fi", "exampleFi", ""), new LocalizedRouteData("fi", "exampleFi", "ExampleFi"))
             };
 
             List<TestInputExpected> allParameters = new List<TestInputExpected>()
@@ -80,7 +81,11 @@ namespace localization.tests.UnitTests.Localization
             {
                 new TestInputExpected(new ConvertRouteToLinkInput("fi", "koti"), "Koti"),
                 new TestInputExpected(new ConvertRouteToLinkInput("fi", "ota_yhteyttä"), "Ota Yhteyttä"),
-                new TestInputExpected(new ConvertRouteToLinkInput("en", ""), "")
+                new TestInputExpected(new ConvertRouteToLinkInput("en", ""), ""),
+                new TestInputExpected(new ConvertRouteToLinkInput("fi", "exampleFI"), "ExampleFI"),
+                new TestInputExpected(new ConvertRouteToLinkInput("fi", "exampleFi_sv-tESt"), "ExampleFi Sv TESt"),
+                new TestInputExpected(new ConvertRouteToLinkInput("fi", "a"), "A"),
+                new TestInputExpected(new ConvertRouteToLinkInput("fi", "_a___b_"), "A B"),
             };
 
             foreach (var test in inputsAndExpectations)

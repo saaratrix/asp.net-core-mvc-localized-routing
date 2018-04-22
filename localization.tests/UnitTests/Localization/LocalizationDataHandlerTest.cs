@@ -76,6 +76,10 @@ namespace localization.tests.UnitTests.Localization
             LocalizationDataHandler.AddActionData("Home", "About", "fi", "miestä", "Miestä", new List<string>());
             LocalizationDataHandler.AddActionData("Home", "About", "sv", "Om", "Om", new List<string>());
 
+            LocalizationDataHandler.AddActionData("Test", "Index", defaultCulture, "", "", new List<string>());
+            LocalizationDataHandler.AddActionData("Test", "Index", "fi", "", "Testi", new List<string>());
+            LocalizationDataHandler.AddActionData("Test", "Index", "sv", "", "Test", new List<string>());
+
             LocalizationDataHandler.AddActionData("Test", "TestAction", defaultCulture, "testaction", "Test Action", new List<string>());
             LocalizationDataHandler.AddActionData("Test", "TestAction", "fi", "TestiToiminta", "Testi Toiminta", new List<string>());
             LocalizationDataHandler.AddActionData("Test", "TestAction", "sv", "TestHandling", "Testi Handling", new List<string>());
@@ -90,6 +94,12 @@ namespace localization.tests.UnitTests.Localization
                 new TestInputExpected(new TestActionControllerData("home", "about", null, defaultCulture), new LocalizedUrlResult() { Url = "/Home/about", LinkName = "" }),
                 new TestInputExpected(new TestActionControllerData("hOme", "about", null, "fi"), new LocalizedUrlResult() { Url = "/fi/Koti/miestä", LinkName = "Miestä" }),
                 new TestInputExpected(new TestActionControllerData("hoMe", "about", null, "sv"), new LocalizedUrlResult() { Url = "/sv/hem/Om", LinkName = "Om" }),
+
+                //// Test actions
+                //new TestInputExpected(new TestActionControllerData("test", "index"), new LocalizedUrlResult() { Url = "/Test", LinkName = "" }),
+                new TestInputExpected(new TestActionControllerData("test", "inDex", null, "fi"), new LocalizedUrlResult() { Url = "/fi/Testi", LinkName = "Testi" }),
+                new TestInputExpected(new TestActionControllerData("test", "index", null, "sv"), new LocalizedUrlResult() { Url = "/sv/Test", LinkName = "Test" }),
+
                 // Test actions
                 new TestInputExpected(new TestActionControllerData("tESt", "teSTAction"), new LocalizedUrlResult() { Url = "/Test/testaction", LinkName = "" }),
                 new TestInputExpected(new TestActionControllerData("test", "testAction", null, "fi"), new LocalizedUrlResult() { Url = "/fi/Testi/TestiToiminta", LinkName = "Testi Toiminta" }),
@@ -113,7 +123,7 @@ namespace localization.tests.UnitTests.Localization
                 var result = LocalizationDataHandler.GetUrl(input.Controller, input.Action, input.Culture);
 
                 Assert.AreEqual(expected.Url, result.Url);
-                Assert.AreEqual(expected.LinkName, result.LinkName, String.Format("For {0}/{1}", input.Controller, input.Action));
+                Assert.AreEqual(expected.LinkName, result.LinkName, String.Format("For {0}/{1} {2}", input.Controller, input.Action, input.Culture));
             }    
             
             foreach (var test in throwingTests)

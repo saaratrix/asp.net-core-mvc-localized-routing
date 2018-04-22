@@ -152,7 +152,7 @@ namespace localization.Localization
                             actionUrl = linkData.Route;
                             // If the controllerName isn't the default one add a /
                             // If not it would be for example /fi/accountLogin    instead of /fi/account/login
-                            if (!isDefaultController || !isDefaultAction)
+                            if (!isDefaultAction)
                             {
                                 // So it becomes => /culture/controller/                             
                                 controllerUrl += "/";

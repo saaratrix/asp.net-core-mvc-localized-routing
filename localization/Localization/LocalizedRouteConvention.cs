@@ -242,6 +242,28 @@ namespace localization.Localization
 
             List<ActionModel> localizedActions = new List<ActionModel>();
 
+            // For default actions we need to check if the LocalizedRouteAttrivute exists or not.
+            // This is so we can name the action after the controller
+            // For example otherwise HomeController for finnish Culture 
+            if (actionName == LocalizationDataHandler.DefaultAction)
+            {
+                HashSet<string> cultures = new HashSet<string>(LocalizationDataHandler.SupportedCultures);   
+                
+                // Remove all 
+                cultures.RemoveWhere(x => actionLocalizationsAttributes.FirstOrDefault(attr => attr.Culture == x) != null);
+                cultures.Remove(LocalizationDataHandler.DefaultCulture);
+
+                foreach (string culture in cultures)
+                {
+                    // The localized controller name is the link for the index action
+                    string localizedControllerName = GetLocalizedControllerName(controllerModel, culture);
+                    if (localizedControllerName != controllerName)
+                    {                        
+                        LocalizationDataHandler.AddActionData(controllerName, actionName, culture, "", localizedControllerName, sortedRouteParameters);
+                    }
+                }
+            }
+
             foreach (LocalizedRouteAttribute attribute in actionLocalizationsAttributes)
             {
                 string route = attribute.Route + parameterTemplate;
@@ -277,7 +299,6 @@ namespace localization.Localization
                 // Add the localized route for the action
                 // Example of final route:  "fi/koti" + "/" + "ota_yhteyttä"
                 LocalizationDataHandler.AddActionData(controllerName, actionName, attribute.Culture, attribute.Route, linkName, sortedRouteParameters);
-
             }
 
             return localizedActions;
