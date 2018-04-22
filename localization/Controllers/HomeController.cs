@@ -13,13 +13,13 @@ namespace localization.Controllers
     [LocalizedRoute("fi", "koti")]
     [LocalizedRoute("sv")]
     public class HomeController : LocalizationController
-    {        
+    {
         public IActionResult Index()
         {
             return View();
         }
 
-        [LocalizedRoute("fi", "miestä")]
+        [LocalizedRoute("fi", "meistä")]
         [LocalizedRoute("sv", "om")]
         public IActionResult About()
         {

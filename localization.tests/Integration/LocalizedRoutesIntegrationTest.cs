@@ -88,7 +88,7 @@ namespace localization.tests.Integration
             List<TestInputExpected> inputsAndExpectations = new List<TestInputExpected>()
             {
                 new TestInputExpected("/fi", null),
-                new TestInputExpected("/fi/koti/mIEStä", null),
+                new TestInputExpected("/fi/koti/mEIStä", null),
                 new TestInputExpected("/fi/KoTi/ota_yhteyttä", null),
                 new TestInputExpected("/fi/exampleFi", null),
                 new TestInputExpected("/fi/exampleFi/param/100/finnish", null),
@@ -103,7 +103,7 @@ namespace localization.tests.Integration
             List<(string Href, string Link)> navigationUrls = new List<(string Href, string Text)>()
             {
                 ( "/fi", "Koti"),
-                ( "/fi/koti/miestä", "Miestä"),
+                ( "/fi/koti/meistä", "Meistä"),
                 ( "/fi/koti/ota_yhteyttä", "Ota Yhteyttä"),
                 ( "/fi/exampleFi", "ExampleFi"),
                 ( "/fi/exampleFi/param/5/fi", "Param"),

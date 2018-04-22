@@ -1,0 +1,30 @@
+﻿@using System.Globalization
+@using localization.Localization
+@{
+
+    string culture = ViewData["culture"] as string;
+    if (culture == null)
+    {
+        culture = CultureInfo.CurrentCulture.Name;
+    }
+
+    string controller = ViewData.ContainsKey("controller") ? ViewData["controller"] as string : LocalizationDataHandler.DefaultController;
+    string action = ViewData.ContainsKey("action") ? ViewData["action"] as string : LocalizationDataHandler.DefaultAction;
+
+    // Get the route data so parameter data is maintained when changing cultures
+    // ViewContext.RouteData.Values seems to always be set, so the `?` is probably unnecessary.
+    Dictionary<string, string> routeData = ViewContext.RouteData?.Values.ToDictionary(kvp => kvp.Key, kvp => kvp.Value as string);
+}
+
+<ul class="nav navbar-nav navbar-right">
+    @foreach (var kvp in LocalizationDataHandler.SupportedCultures)
+    {
+        // Skip the current culture  
+        if (kvp.Key == culture) {
+            continue;
+        }
+        <li>
+            <a asp-controller="@controller" asp-action="@action" cms-culture="@kvp.Key" cms-keep-link="true" asp-all-route-data="routeData" >@kvp.Value</a>
+        </li>
+    }
+</ul>

@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace localization.Localization
 {
@@ -21,7 +17,8 @@ namespace localization.Localization
         /// <summary>
         /// The list of all supported cultures
         /// </summary>
-        public static HashSet<string> SupportedCultures { get; set; }
+        public static Dictionary<string, string> SupportedCultures { get; set; }
+        
 
         public static string DefaultController { get; set; } = "Home";
         public static string DefaultAction { get; set; } = "Index";
@@ -32,7 +29,7 @@ namespace localization.Localization
         /// <summary>
         /// All the routes and their cultural representation, example:
         /// home => names { home, koti },  actions { index, about }
-        ///     action about => names { about, miestä }
+        ///     action about => names { about, meistä }
         /// </summary>
         // Will never get modified after initialization is done.
         private static ConcurrentDictionary<string, CultureControllerData> ControllerRoutes
@@ -44,7 +41,8 @@ namespace localization.Localization
         } 
 
         public static void AddControllerData(string a_controller, string a_culture, string a_route)
-        {
+        {   
+
             string controllerKey = a_controller.ToLower();
             
             // If the controller doesn't exist, create it!            
@@ -235,11 +233,11 @@ namespace localization.Localization
         /// <returns></returns>
         public static string GetCultureFromUrl(string a_url)
         {            
-            foreach(string culture in SupportedCultures)
+            foreach(var kvp in SupportedCultures)
             {
-                if (a_url.StartsWith("/" + culture + "/"))
+                if (a_url.StartsWith("/" + kvp.Key + "/"))
                 {
-                    return culture;                    
+                    return kvp.Key;                    
                 }
             }
             return DefaultCulture;

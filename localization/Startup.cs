@@ -44,11 +44,11 @@ namespace localization
 
             // Set up cultures
             LocalizationDataHandler.DefaultCulture = "en";
-            LocalizationDataHandler.SupportedCultures = new HashSet<string>()
+            LocalizationDataHandler.SupportedCultures = new Dictionary<string, string>()
             {
-                "en",
-                "fi",
-                "sv"
+                { "en", "English" },
+                { "fi", "Suomeksi" },
+                { "sv", "Svenska" }
             };
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -67,9 +67,9 @@ namespace localization
             {
                 options.DefaultRequestCulture = new RequestCulture(LocalizationDataHandler.DefaultCulture, LocalizationDataHandler.DefaultCulture);
 
-                foreach (string name in LocalizationDataHandler.SupportedCultures)
+                foreach (var kvp in LocalizationDataHandler.SupportedCultures)
                 {
-                    CultureInfo culture = new CultureInfo(name);
+                    CultureInfo culture = new CultureInfo(kvp.Key);
                     options.SupportedCultures.Add(culture);
                     options.SupportedUICultures.Add(culture);
                 }

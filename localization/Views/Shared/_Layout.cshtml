@@ -52,6 +52,7 @@
                     <li><a asp-controller="Example" asp-action="Parameter" asp-route-index="5" asp-ROUTE-test="@ViewData["culture"]" cms-culture="">example param</a></li>    
                     <li><a asp-controller="Example" asp-action="Parameter" asp-all-route-data="routeData" cms-culture="" cms-keep-link="true">example param 2</a></li>                    
                 </ul>
+                @await Html.PartialAsync("_CultureSelector")
                 @await Html.PartialAsync("_LoginPartial")
             </div>
         </div>

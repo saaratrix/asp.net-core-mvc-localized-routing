@@ -14,12 +14,12 @@ namespace localization.Localization
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {            
-            base.OnActionExecuting(context); 
-
+            base.OnActionExecuting(context);            
+            
             string culture = CultureInfo.CurrentCulture.Name;
             ViewData["culture"] = culture;
+            ViewData["controller"] = ControllerContext.ActionDescriptor.ControllerName;
+            ViewData["action"] = ControllerContext.ActionDescriptor.ActionName;
         }  
-        
-        
     }
 }

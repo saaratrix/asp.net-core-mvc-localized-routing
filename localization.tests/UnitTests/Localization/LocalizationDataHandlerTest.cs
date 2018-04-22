@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace localization.tests.UnitTests.Localization
 {
@@ -15,11 +14,11 @@ namespace localization.tests.UnitTests.Localization
         public static void InitDataHandler()
         {
             LocalizationDataHandler.DefaultCulture = "en";
-            LocalizationDataHandler.SupportedCultures = new HashSet<string>()
+            LocalizationDataHandler.SupportedCultures = new Dictionary<string, string>()
             {
-                "en",
-                "fi",
-                "sv"
+                { "en", "English" },
+                { "fi", "Suomeksi" },
+                { "sv", "Svenska" }
             };
         }
 
@@ -31,7 +30,7 @@ namespace localization.tests.UnitTests.Localization
             LocalizationDataHandler.DefaultCulture = "en";
             LocalizationDataHandler.DefaultController = "Home";
             LocalizationDataHandler.DefaultAction = "Index";
-            LocalizationDataHandler.SupportedCultures = new HashSet<string>();
+            LocalizationDataHandler.SupportedCultures = new Dictionary<string, string>();            
 
             var type = typeof(LocalizationDataHandler);
             var propInfo = type.GetField("_controllerRoutes", BindingFlags.Static | BindingFlags.NonPublic);            
@@ -55,7 +54,7 @@ namespace localization.tests.UnitTests.Localization
 
         // Tests the Url part of the response
         [TestMethod]
-        public void GetUrlHrefTest()
+        public void GetUrlTest()
         {
             string defaultCulture = LocalizationDataHandler.DefaultCulture;
             // Controllers
@@ -73,7 +72,7 @@ namespace localization.tests.UnitTests.Localization
             LocalizationDataHandler.AddActionData("Home", "Index", "sv", "", "Index", new List<string>());
 
             LocalizationDataHandler.AddActionData("Home", "About", defaultCulture, "about", "About", new List<string>());
-            LocalizationDataHandler.AddActionData("Home", "About", "fi", "miestä", "Miestä", new List<string>());
+            LocalizationDataHandler.AddActionData("Home", "About", "fi", "meistä", "Meistä", new List<string>());
             LocalizationDataHandler.AddActionData("Home", "About", "sv", "Om", "Om", new List<string>());
 
             LocalizationDataHandler.AddActionData("Test", "Index", defaultCulture, "", "", new List<string>());
@@ -92,7 +91,7 @@ namespace localization.tests.UnitTests.Localization
                 new TestInputExpected(new TestActionControllerData("hoMe", "INdex", null, "sv"), new LocalizedUrlResult() { Url = "/sv", LinkName = "Index" }),
                 // About actions
                 new TestInputExpected(new TestActionControllerData("home", "about", null, defaultCulture), new LocalizedUrlResult() { Url = "/Home/about", LinkName = "" }),
-                new TestInputExpected(new TestActionControllerData("hOme", "about", null, "fi"), new LocalizedUrlResult() { Url = "/fi/Koti/miestä", LinkName = "Miestä" }),
+                new TestInputExpected(new TestActionControllerData("hOme", "about", null, "fi"), new LocalizedUrlResult() { Url = "/fi/Koti/meistä", LinkName = "Meistä" }),
                 new TestInputExpected(new TestActionControllerData("hoMe", "about", null, "sv"), new LocalizedUrlResult() { Url = "/sv/hem/Om", LinkName = "Om" }),
 
                 //// Test actions

@@ -79,9 +79,9 @@ namespace localization.Localization
             {
                 // Set up the "/", "/culture1", "/culture2" for all supported cultures.
                 // "/" is for the default culture.
-                foreach(string culture in LocalizationDataHandler.SupportedCultures)
+                foreach(var kvp in LocalizationDataHandler.SupportedCultures)
                 {
-                    string template = LocalizationDataHandler.DefaultCulture == culture ? "" : culture;
+                    string template = LocalizationDataHandler.DefaultCulture == kvp.Key ? "" : kvp.Key;
 
                     AttributeRouteModel defaultRoute = new AttributeRouteModel();
                     defaultRoute.Template = template;
@@ -112,7 +112,7 @@ namespace localization.Localization
 
             // So that any culture that doesn't have the controller added as a route will automatically get the default culture route,
             // Example if [LocalizedRoute("sv", ""] is not on the defaultcontroller it will be added so its found!
-            HashSet<string> foundCultures = new HashSet<string>(LocalizationDataHandler.SupportedCultures);//.ToDictionary(x => x, x => x);
+            HashSet<string> foundCultures = LocalizationDataHandler.SupportedCultures.Select(kvp => kvp.Key).ToHashSet();
             foundCultures.Remove(LocalizationDataHandler.DefaultCulture);
 
             // Loop over all localized attributes
@@ -247,7 +247,7 @@ namespace localization.Localization
             // For example otherwise HomeController for finnish Culture 
             if (actionName == LocalizationDataHandler.DefaultAction)
             {
-                HashSet<string> cultures = new HashSet<string>(LocalizationDataHandler.SupportedCultures);   
+                HashSet<string> cultures = LocalizationDataHandler.SupportedCultures.Select(kvp => kvp.Key).ToHashSet();   
                 
                 // Remove all 
                 cultures.RemoveWhere(x => actionLocalizationsAttributes.FirstOrDefault(attr => attr.Culture == x) != null);
