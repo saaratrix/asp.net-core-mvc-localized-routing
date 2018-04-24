@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ using System.Web;
 namespace localization.tests.Integration
 {
     [TestClass]
-    public class LocalizedRoutesIntegrationTest
+    public class LocalizedGetRoutesIntegrationTest
     {
         private TestServer _server;
         private HttpClient _client;
@@ -50,7 +51,7 @@ namespace localization.tests.Integration
         }
 
         [TestMethod]
-        public async Task TestEnglishCultures()
+        public async Task GET_LocalizedRoutesEnglish()
         {
             // Test HomeController (default), ExampleController and Error routes
             List<TestInputExpected> inputsAndExpectations = new List<TestInputExpected>()
@@ -82,7 +83,7 @@ namespace localization.tests.Integration
         }
 
         [TestMethod]
-        public async Task TestFinnishCultures()
+        public async Task GET_LocalizedRoutesFinnish()
         {
             // Test HomeController (default), ExampleController and Error routes
             List<TestInputExpected> inputsAndExpectations = new List<TestInputExpected>()
@@ -114,7 +115,7 @@ namespace localization.tests.Integration
         }
 
         [TestMethod]
-        public async Task TestSwedishCultures()
+        public async Task GET_LocalizedRoutesSwedish()
         {
             // Test HomeController (default), ExampleController and Error routes
             List<TestInputExpected> inputsAndExpectations = new List<TestInputExpected>()
@@ -159,7 +160,7 @@ namespace localization.tests.Integration
                 response = await _client.GetAsync(inputUrl);
                 content = await response.Content.ReadAsStringAsync();
 
-                Assert.AreEqual(System.Net.HttpStatusCode.OK, response.StatusCode, "Status code for " + inputUrl);
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "Status code for " + inputUrl);
             }
 
             /* Check bad routes */
@@ -168,7 +169,7 @@ namespace localization.tests.Integration
                 response = await _client.GetAsync(failUrl);
                 content = await response.Content.ReadAsStringAsync();
 
-                Assert.AreEqual(System.Net.HttpStatusCode.NotFound, response.StatusCode, "Status code for " + failUrl);
+                Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode, "Status code for " + failUrl);
             }
 
             /* Check the Nav Links */

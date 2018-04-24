@@ -10,21 +10,19 @@ namespace localization.tests.TestClasses
 {
     class TestHTMLHelper
     {
-        public List<(string Href, string Link)> GetNavLinks(string a_htmlContent)
+        public List<(string Href, string Link)> GetNavLinks(string htmlContent)
         {
             List<(string, string)> result = new List<(string, string)>();
 
             HtmlDocument document = new HtmlDocument();
-            document.LoadHtml(a_htmlContent);
+            document.LoadHtml(htmlContent);
 
-            var ulNode = document.DocumentNode.Descendants()
-                            .Where(n => n.NodeType == HtmlNodeType.Element)
+            var ulNode = document.DocumentNode.Descendants()                            
                             .Where(n => n.Name == "ul" && n.GetClasses().Contains("nav") && n.GetClasses().Contains("navbar-nav"))
                             .FirstOrDefault();
             //HtmlNode ulNode = document.DocumentNode.SelectSingleNode("//ul[@class='nav navbar-nav']");
 
-            var anchorNodes = ulNode.Descendants()
-                                            .Where(n => n.NodeType == HtmlNodeType.Element)
+            var anchorNodes = ulNode.Descendants()                                            
                                             .Where(n => n.Name == "a");
 
             foreach (HtmlNode node in anchorNodes)
@@ -35,6 +33,61 @@ namespace localization.tests.TestClasses
             }
 
             return result;
-        }        
+        }
+
+        public Dictionary<string, string> GetInputsForForm(string htmlContent, bool includeHidden)
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+
+            HtmlDocument document = new HtmlDocument();
+            document.LoadHtml(htmlContent);
+
+            var form = document.DocumentNode.Descendants()
+                        .Where(n => n.Name == "form").FirstOrDefault();
+
+            if (form == null)
+            {
+                return result;
+            }
+
+            var inputs = form.Descendants()
+                            .Where(n => n.Name == "input");
+
+            foreach (var input in inputs)
+            {
+                string name = input.GetAttributeValue("name", "");
+                string value = input.GetAttributeValue("value", "");
+
+                string type = input.GetAttributeValue("type", "");
+
+                if (!includeHidden && type == "hidden")
+                {
+                    continue;
+                }
+
+                result.TryAdd(name, value);
+            }
+
+            return result;
+        }
+
+        public Dictionary<string, string> GetElements(string htmlContent, List<string> elementIds)
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+
+            HtmlDocument document = new HtmlDocument();
+            document.LoadHtml(htmlContent);
+
+            foreach (string id in elementIds)
+            {
+                var element = document.GetElementbyId(id);
+                if (element != null)
+                {
+                    result.TryAdd(id, element.InnerText);
+                }
+            }
+
+            return result;
+        }
     }
 }

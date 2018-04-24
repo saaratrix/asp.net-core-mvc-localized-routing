@@ -9,7 +9,8 @@ using localization.Localization;
 
 namespace localization.Controllers
 {
-    // This is not necessary if Home is the defaultcontroller, automatically happens!    
+    // Creates the route /fi/koti  for finnish culture
+    // Creates the route /sv/Home for swedish culture since Route = ""
     [LocalizedRoute("fi", "koti")]
     [LocalizedRoute("sv")]
     public class HomeController : LocalizationController

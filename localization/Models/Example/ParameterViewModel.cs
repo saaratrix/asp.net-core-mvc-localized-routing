@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace localization.Models.Local
+namespace localization.Models.Example
 {
     public class ParameterViewModel
     {

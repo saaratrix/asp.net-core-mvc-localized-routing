@@ -1,23 +1,13 @@
-﻿@using localization.Models.Local;
+﻿@using localization.Models.Example;
 @model ParameterViewModel
-@{
-    // This is to clear the parameter route data for the [HttpGet] request that is added to the form action url
-    // Example: /Example/Parameter/5/test
-    // And the [HttpPost] route only listens to /Example/Parameter,  so /Example/Parameter/5/test would be a faulty route.
-    // Alternative one can write [HttpPost("parameter/{index}/{test}")] and then /Example/Parameter/ wouldn't work anymore but /Example/Parameter/5/test would!
-    var postroutedata = new Dictionary<string, string>()
-{
-    { "Index", null },
-    { "Test", null }
-};
-}
 
-@ViewData["index"] - @ViewData["test"]
+<!-- the id's are for tests so HtmlAgilityPack can find the elements easier. -->
+<span id="parameter_index">@ViewData["index"]</span> - <span id="parameter_test">@ViewData["test"]</span>
 <br />
 @Localizer["Is post request"]: @ViewData["post"]
 <br />
 <h2>@Localizer["HTTP Post request test"]</h2>
-<form method="post" asp-all-route-data="postroutedata" cms-culture="@ViewData["culture"]" asp-action="Parameter" asp-controller="Example">
+<form method="post" cms-culture="@ViewData["culture"]" asp-action="Parameter" asp-controller="Example">
     <div>
         <label asp-for="Index"></label>
         <input asp-for="Index" />

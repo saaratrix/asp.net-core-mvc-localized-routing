@@ -14,7 +14,6 @@ namespace localization.Localization
         /// <summary>
         /// The name such as about
         /// </summary>
-        public string LinkName;
-        
+        public string LinkName;        
     }
 }
