@@ -23,9 +23,9 @@ namespace localization.Localization
         /// </summary>
         public IList<CultureInfo> SupportedCultures {get; set;}
 
-        public UrlCultureProvider(IList<CultureInfo> a_supportedCultures)
+        public UrlCultureProvider(IList<CultureInfo> supportedCultures)
         {
-            SupportedCultures = a_supportedCultures;
+            SupportedCultures = supportedCultures;
         }              
 
         public override Task<ProviderCultureResult> DetermineProviderCultureResult(HttpContext httpContext)

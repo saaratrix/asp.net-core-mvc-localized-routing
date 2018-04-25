@@ -146,14 +146,14 @@ namespace localization.tests.Integration
             await TestCulture(inputsAndExpectations, failedRoutes, "/sv", navigationUrls);
         }
 
-        private async Task TestCulture(List<TestInputExpected> a_inputsAndExpectations, List<string> a_failedRoutes, string a_navigationUrl, List<(string Href, string Link)> a_navLinksExpected)
+        private async Task TestCulture(List<TestInputExpected> inputsAndExpectations, List<string> failedRoutes, string navigationUrl, List<(string Href, string Link)> navLinksExpected)
         {
             TestHTMLHelper testHTMLHelper = new TestHTMLHelper();
             HttpResponseMessage response;
             string content;
 
             /* Check ok routes! */
-            foreach (var test in a_inputsAndExpectations)
+            foreach (var test in inputsAndExpectations)
             {
                 string inputUrl = test.Input as string;
 
@@ -164,7 +164,7 @@ namespace localization.tests.Integration
             }
 
             /* Check bad routes */
-            foreach (var failUrl in a_failedRoutes)
+            foreach (var failUrl in failedRoutes)
             {
                 response = await _client.GetAsync(failUrl);
                 content = await response.Content.ReadAsStringAsync();
@@ -173,15 +173,15 @@ namespace localization.tests.Integration
             }
 
             /* Check the Nav Links */
-            response = await _client.GetAsync(a_navigationUrl);
+            response = await _client.GetAsync(navigationUrl);
             content = await response.Content.ReadAsStringAsync();
 
             var navLinks = testHTMLHelper.GetNavLinks(content);
 
             for (int i = 0; i < navLinks.Count; i++)
             {
-                string expectedHref = a_navLinksExpected[i].Href;
-                string expectedLink = a_navLinksExpected[i].Link;
+                string expectedHref = navLinksExpected[i].Href;
+                string expectedLink = navLinksExpected[i].Link;
                 // &#xE4; => ä e.t.c.
                 string responseHref = HttpUtility.HtmlDecode(navLinks[i].Href);
                 string responseLink = HttpUtility.HtmlDecode(navLinks[i].Link);

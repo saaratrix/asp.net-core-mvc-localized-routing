@@ -39,52 +39,52 @@ namespace localization.Localization
             }
         } 
 
-        public static void AddControllerData(string a_controller, string a_culture, string a_route)
+        public static void AddControllerData(string controller, string culture, string route)
         {   
 
-            string controllerKey = a_controller.ToLower();
+            string controllerKey = controller.ToLower();
             
             // If the controller doesn't exist, create it!            
             if (!ControllerRoutes.ContainsKey(controllerKey))
             {                
                 ControllerRoutes.TryAdd(controllerKey, new CultureControllerData());
             }            
-            ControllerRoutes[controllerKey].Names.TryAdd(a_culture, a_route);
+            ControllerRoutes[controllerKey].Names.TryAdd(culture, route);
         }
 
         /// <summary>
         /// Add the action data.  Will throw exception if the controller doesn't exist
         /// </summary>
-        /// <param name="a_controller"></param>
-        /// <param name="a_action"></param>
-        /// <param name="a_culture"></param>
-        /// <param name="a_route"></param>
-        /// <param name="a_linkName"></param>
-        public static void AddActionData(string a_controller, string a_action, string a_culture, string a_route, string a_linkName, List<string> a_routeParameters)
+        /// <param name="controller"></param>
+        /// <param name="action"></param>
+        /// <param name="culture"></param>
+        /// <param name="route"></param>
+        /// <param name="linkName"></param>
+        public static void AddActionData(string controller, string action, string culture, string route, string linkName, List<string> routeParameters)
         {            
-            string actionKey = a_action.ToLower();           
+            string actionKey = action.ToLower();           
 
-            CultureControllerData controllerData = ControllerRoutes[a_controller.ToLower()];
+            CultureControllerData controllerData = ControllerRoutes[controller.ToLower()];
             if (!controllerData.Actions.ContainsKey(actionKey))
             {
-                controllerData.Actions.TryAdd(actionKey, new CultureActionData(a_routeParameters));
+                controllerData.Actions.TryAdd(actionKey, new CultureActionData(routeParameters));
             }           
 
-            controllerData.Actions[actionKey].UrlData.TryAdd(a_culture, new CultureUrlData(a_route, a_linkName));
+            controllerData.Actions[actionKey].UrlData.TryAdd(culture, new CultureUrlData(route, linkName));
         }
         
         /// <summary>
         /// Get the url for a controller & action based on culture
         /// </summary>
-        /// <param name="a_controller"></param>
-        /// <param name="a_action"></param>
-        /// <param name="a_culture"></param>
+        /// <param name="controller"></param>
+        /// <param name="action"></param>
+        /// <param name="culture"></param>
         /// <returns></returns>
-        public static LocalizedUrlResult GetUrl(string a_controller, string a_action, string a_culture)
+        public static LocalizedUrlResult GetUrl(string controller, string action, string culture)
         {
             LocalizedUrlResult result = new LocalizedUrlResult();
-            string controllerKey = a_controller.ToLower();
-            string actionKey = a_action.ToLower();
+            string controllerKey = controller.ToLower();
+            string actionKey = action.ToLower();
 
             string controllerUrl;
             string actionUrl;
@@ -95,14 +95,14 @@ namespace localization.Localization
 
                 if (controllerData.Actions.ContainsKey(actionKey))
                 {
-                    bool isDefaultController = a_controller.Equals(DefaultController, StringComparison.OrdinalIgnoreCase);
-                    bool isDefaultAction = a_action.Equals(DefaultAction, StringComparison.OrdinalIgnoreCase);
+                    bool isDefaultController = controller.Equals(DefaultController, StringComparison.OrdinalIgnoreCase);
+                    bool isDefaultAction = action.Equals(DefaultAction, StringComparison.OrdinalIgnoreCase);
 
                     // Ok now we have the controller name and action data name!
                     CultureActionData actionData = controllerData.Actions[actionKey];                    
 
                     // Check if culture is default culture
-                    if (a_culture == DefaultCulture)
+                    if (culture == DefaultCulture)
                     {
                         if (isDefaultAction && isDefaultController)
                         {                            
@@ -136,16 +136,16 @@ namespace localization.Localization
                     // If the culture isn't default culture
                     else
                     {     
-                        CultureUrlData linkData = actionData.UrlData.ContainsKey(a_culture) ? actionData.UrlData[a_culture] : actionData.UrlData[DefaultCulture];
+                        CultureUrlData linkData = actionData.UrlData.ContainsKey(culture) ? actionData.UrlData[culture] : actionData.UrlData[DefaultCulture];
 
                         if (isDefaultController && isDefaultAction)
                         {
-                            result.Url = "/" + a_culture;
+                            result.Url = "/" + culture;
                         }
                         else
                         {                            
                             // If the controller doesn't exist add the culture prefix to it stays in the culture prefix space.
-                            controllerUrl = controllerData.Names.ContainsKey(a_culture) ? controllerData.Names[a_culture] : a_culture + "/" + a_controller;
+                            controllerUrl = controllerData.Names.ContainsKey(culture) ? controllerData.Names[culture] : culture + "/" + controller;
                             actionUrl = linkData.Route;
                             // If the controllerName isn't the default one add a /
                             // If not it would be for example /fi/accountLogin    instead of /fi/account/login
@@ -187,10 +187,10 @@ namespace localization.Localization
         /// <param name="actionName"></param>
         /// <param name="routeValues"></param>
         /// <returns></returns>
-        public static string GetOrderedParameters(string a_controller, string a_action, Dictionary<string, string> a_routeValues)
+        public static string GetOrderedParameters(string controller, string action, Dictionary<string, string> routeValues)
         {
-            string controllerKey = a_controller.ToLower();
-            string actionKey = a_action.ToLower();
+            string controllerKey = controller.ToLower();
+            string actionKey = action.ToLower();
 
             string result = "";
 
@@ -205,9 +205,9 @@ namespace localization.Localization
                     {
                         foreach (string parameter in actionData.ParametersData)
                         {
-                            if (a_routeValues.ContainsKey(parameter))
+                            if (routeValues.ContainsKey(parameter))
                             {                                
-                                result += "/" + a_routeValues[parameter];                                
+                                result += "/" + routeValues[parameter];                                
                             }
                             // Otherwise we found parameter data that isn't accounted for.                           
                             else
@@ -228,13 +228,13 @@ namespace localization.Localization
         /// So don't name them cultures!!
         /// Note: CultureInfo.CurrentCulture.Name is a good way of getting the culture for the current request.
         /// </summary>
-        /// <param name="a_url"></param>
+        /// <param name="url"></param>
         /// <returns></returns>
-        public static string GetCultureFromUrl(string a_url)
+        public static string GetCultureFromUrl(string url)
         {            
             foreach(var kvp in SupportedCultures)
             {
-                if (a_url.StartsWith("/" + kvp.Key + "/"))
+                if (url.StartsWith("/" + kvp.Key + "/"))
                 {
                     return kvp.Key;                    
                 }

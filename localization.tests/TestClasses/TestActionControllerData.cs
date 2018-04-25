@@ -17,22 +17,22 @@ namespace localization.tests.TestClasses
 
         }
 
-        public TestActionControllerData(string a_controller, string a_action)
+        public TestActionControllerData(string controller, string action)
         {
-            Controller = a_controller;
-            Action = a_action;
+            Controller = controller;
+            Action = action;
         }
 
-        public TestActionControllerData(string a_controller, string a_action, Dictionary<string, string> a_routeValues)
-            : this(a_controller, a_action)
+        public TestActionControllerData(string controller, string action, Dictionary<string, string> routeValues)
+            : this(controller, action)
         {
-            RouteValues = a_routeValues;
+            RouteValues = routeValues;
         }
 
-        public TestActionControllerData(string a_controller, string a_action, Dictionary<string, string> a_routeValues, string a_culture)
-            : this(a_controller, a_action, a_routeValues)
+        public TestActionControllerData(string controller, string action, Dictionary<string, string> routeValues, string culture)
+            : this(controller, action, routeValues)
         {
-            Culture = a_culture;
+            Culture = culture;
         }
     }
 }

@@ -43,20 +43,20 @@ namespace localization.Localization
         /// Add an AttributeRouteModel to a SelectorModel list.
         /// It also tries to set the first entry of the list if the AttributeRouteModel is null there.
         /// </summary>
-        /// <param name="a_selectorModels"></param>
-        /// <param name="a_attributeRouteModel"></param>
-        public void AddAttributeRouteModel(IList<SelectorModel> a_selectorModels, AttributeRouteModel a_attributeRouteModel)
+        /// <param name="selectorModels"></param>
+        /// <param name="attributeRouteModel"></param>
+        public void AddAttributeRouteModel(IList<SelectorModel> selectorModels, AttributeRouteModel attributeRouteModel)
         {
             // Override what seems to be default SelectorModel
-            if (a_selectorModels.Count == 1 && a_selectorModels[0].AttributeRouteModel == null)
+            if (selectorModels.Count == 1 && selectorModels[0].AttributeRouteModel == null)
             {
-                a_selectorModels[0].AttributeRouteModel = a_attributeRouteModel;
+                selectorModels[0].AttributeRouteModel = attributeRouteModel;
             }
             else
             {
-                a_selectorModels.Add(new SelectorModel
+                selectorModels.Add(new SelectorModel
                 {
-                    AttributeRouteModel = a_attributeRouteModel
+                    AttributeRouteModel = attributeRouteModel
                 });
             }            
         }
@@ -66,11 +66,11 @@ namespace localization.Localization
         /// Example: Culture = fi, Route = "moi"
         /// Create Route prefix: fi/moi   
         /// </summary>
-        /// <param name="a_controller"></param>
-        public void AddControllerRoutes(ControllerModel a_controller)
+        /// <param name="controllerModel"></param>
+        public void AddControllerRoutes(ControllerModel controllerModel)
         {   
-            // The controllerName (writing a_controller. every time is hard yo!)
-            string controllerName = a_controller.ControllerName;
+            // The controllerName (writing controllerModel. every time is hard yo!)
+            string controllerName = controllerModel.ControllerName;
 
             // If the controller is the default controller then add the "/", "/culture" routes
             // If we don't do this / for example wouldn't work and would give 404. 
@@ -85,7 +85,7 @@ namespace localization.Localization
 
                     AttributeRouteModel defaultRoute = new AttributeRouteModel();
                     defaultRoute.Template = template;
-                    AddAttributeRouteModel(a_controller.Selectors, defaultRoute);
+                    AddAttributeRouteModel(controllerModel.Selectors, defaultRoute);
                 }
             }
 
@@ -94,10 +94,10 @@ namespace localization.Localization
             // Create the route for the controller,  since default controller should also be reachable by /default this is not done in the else statement
             // Which is not needed for the localized routing since linking to / is fine!            
             AttributeRouteModel controllerRoute = new AttributeRouteModel();
-            controllerRoute.Template = a_controller.ControllerName;                    
-            AddAttributeRouteModel(a_controller.Selectors, controllerRoute);
+            controllerRoute.Template = controllerModel.ControllerName;                    
+            AddAttributeRouteModel(controllerModel.Selectors, controllerRoute);
 
-            AddControllerLocalizedRoutes(a_controller);
+            AddControllerLocalizedRoutes(controllerModel);
         }
         
         /// <summary>
@@ -169,7 +169,7 @@ namespace localization.Localization
         /// <param name="controllerModel"></param>
         public void AddActionRoutes(ControllerModel controllerModel)
         {
-            // The controllerName (writing a_controler. everytime is hard yo!)
+            // The controllerName (writing controllerModel. everytime is hard yo!)
             string controllerName = controllerModel.ControllerName;
             // All the new localized actions
             List<ActionModel> newActions = new List<ActionModel>();
@@ -225,7 +225,7 @@ namespace localization.Localization
 
                 var localizedActions = CreateLocalizedActionRoutes(controllerModel, action, parameterTemplate, sortedRouteParameters);
                 newActions.AddRange(localizedActions);
-            } // End foreach a_controller.Actions
+            } // End foreach controllerModel.Actions
 
             // Now add all the new actions to the controller
             foreach (ActionModel action in newActions)
@@ -384,12 +384,12 @@ namespace localization.Localization
         /// <summary>
         /// Gets the parameter name from a {parameter}
         /// </summary>
-        /// <param name="a_actionComponent"></param>
+        /// <param name="actionComponent"></param>
         /// <returns></returns>
-        public string GetParameterName(string a_actionComponent)
+        public string GetParameterName(string actionComponent)
         {
             // Example: { param:int = 1 }
-            string name = a_actionComponent.Split(new char[] { '=', ':' }).First();
+            string name = actionComponent.Split(new char[] { '=', ':' }).First();
             // Remove whitespace since that's invalid!
             // Also remove the { character
             name = Regex.Replace(name, @"\s+", "").Substring(1);

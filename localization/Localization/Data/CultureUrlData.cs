@@ -10,10 +10,10 @@ namespace localization.Localization
         public string Route { get; set; }
         public string Link { get; set; }        
 
-        public CultureUrlData(string a_route, string a_link)
+        public CultureUrlData(string route, string link)
         {
-            Route = a_route;
-            Link = a_link;
+            Route = route;
+            Link = link;
         }
     }
 }

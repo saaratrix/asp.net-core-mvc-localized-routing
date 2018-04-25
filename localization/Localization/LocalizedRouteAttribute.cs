@@ -40,8 +40,8 @@ namespace localization.Localization
         {                        
         }
 
-        public LocalizedRouteAttribute(string a_culture)
-            :this(a_culture, "", null)
+        public LocalizedRouteAttribute(string culture)
+            :this(culture, "", null)
         {
 
         }
@@ -50,10 +50,10 @@ namespace localization.Localization
         /// Attribute used by LocalizationConvention to create all the routes.
         /// Defaults Link to null
         /// </summary>
-        /// <param name="a_culture"></param>
-        /// <param name="a_route"></param>
-        public LocalizedRouteAttribute(string a_culture, string a_route)
-           : this(a_culture, a_route, null)
+        /// <param name="culture"></param>
+        /// <param name="route"></param>
+        public LocalizedRouteAttribute(string culture, string route)
+           : this(culture, route, null)
         {
 
         }
@@ -61,24 +61,24 @@ namespace localization.Localization
         /// <summary>
         /// Attribute used by LocalizationConvention to create all the routes.
         /// </summary>
-        /// <param name="a_culture"></param>
-        /// <param name="a_route"></param>
-        /// <param name="a_link">If not defined the value is route with first letter capitalized</param>
-        public LocalizedRouteAttribute(string a_culture, string a_route, string a_link)
+        /// <param name="culture"></param>
+        /// <param name="route"></param>
+        /// <param name="link">If not defined the value is route with first letter capitalized</param>
+        public LocalizedRouteAttribute(string culture, string route, string link)
         {
-            Culture = a_culture;
-            Route = a_route;
+            Culture = culture;
+            Route = route;
             // Replace all the spaces with the whitespace replacement character
             Route = Route.Replace(' ', WhiteSpaceReplacement);            
             
             // If the link is null then set it to the route
-            if (String.IsNullOrEmpty(a_link))
+            if (String.IsNullOrEmpty(link))
             {   
                 Link = ConvertRouteToLink(Culture, Route);         
             }
             else
             {
-                Link = a_link;                
+                Link = link;                
             }                     
         }
 

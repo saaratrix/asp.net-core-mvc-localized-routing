@@ -19,13 +19,13 @@ namespace localization.Localization
         /// </summary>
         public readonly string[] ParametersData;
 
-        public CultureActionData(List<string> a_parametersData)
+        public CultureActionData(List<string> parametersData)
         {
             UrlData = new ConcurrentDictionary<string, CultureUrlData>();
             // If the parameters data has any entries then convert it to a read only list
-            if (a_parametersData.Count > 0)
+            if (parametersData.Count > 0)
             {
-                ParametersData = a_parametersData.ToArray();
+                ParametersData = parametersData.ToArray();
             }
             else
             {
