@@ -9,32 +9,39 @@ using Microsoft.AspNetCore.Mvc.Localization;
 using localization.Localization;
 using localization.Models.Example;
 
-// For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 namespace localization.Controllers
 {
-    // Creates the route /fi/exampleFi for finnish culture
-    [LocalizedRoute("fi", "exampleFi")]
-    // Since there is no [LocalizedRoute] for swedish culture it will be automatically added 
-    // With the route /sv/Example 
+    /*
+     * This Example controller demonstrates how to set up a new controller and a route with a form.
+     * The form uses the following http methods:
+     * GET with parameters
+     * POST with a view model     
+    */
+
+    // Routes for each culture:
+    // Default: /Example
+    // Finnish: /fi/exampleFi
+    // Swedish: /sv/Example     - Takes the name of controller since no [LocalizedRoute] for swedish culture   
+    // The link text for <a> tags will be ExampleFi
+    [LocalizedRoute("fi", "exampleFi")]    
     public class ExampleController : LocalizationController
     {        
         public ExampleController()
-        {
-             
+        {             
         }      
                 
         public IActionResult Index()
         {           
             return View();
-        }       
-
-        // Add the route for default culture with parameters
-        [Route("parameter/{index}/{test}")]
-        //[HttpGet("parameter/{index}/{test}")]
-        // Final route is : /fi/exampleFi/param/{index}/{test}
-        [LocalizedRoute("fi", "param")]        
-        // Since there is no swedish [LocalizedRoute] it will automatically create one.
-        // The swedish route will be /fi/Example/Paramaeter/{index}/{test}
+        }
+        
+        // Routes for each culture:
+        // Default: /Example/Parameter/{index}/{test}
+        // Finnish: /fi/exampleFi/param/{index}/{test}
+        // Swedish: /sv/Example/Parameter/{index}/{test}        - Gets the Action name automatically because no [LocalizedRoute] attribute
+        // [HttpGet("parameter/{index}/{test}")]                - [HttpGet] can be used instead of [Route]
+        [Route("parameter/{index}/{test}")]        
+        [LocalizedRoute("fi", "param")]
         public IActionResult Parameter(int index, string test)
         {
             ViewData["index"] = index;
@@ -42,9 +49,12 @@ namespace localization.Controllers
             ViewData["post"] = false;
             return View();
         }
-        
-        [HttpPost()]
-        // Final route for /fi/ is : /fi/exampleFi/param/{index}/{test}
+
+        // Routes for each culture:
+        // Default: /Example/Parameter
+        // Finnish: /fi/exampleFi/param
+        // Swedish: /sv/Example/Parameter
+        [HttpPost()]        
         [LocalizedRoute("fi", "param")]        
         public IActionResult Parameter(ParameterViewModel model)
         {
@@ -52,15 +62,6 @@ namespace localization.Controllers
             ViewData["test"] = model.Test;
             ViewData["post"] = true;
             return View(model);
-        }
-
-        [Route("getform/{index}/{test}")]
-        public IActionResult GetForm(int index, string test)
-        {
-            ViewData["index"] = index;
-            ViewData["test"] = test;
-
-            return View();
         }
     }
 }

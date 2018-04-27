@@ -121,8 +121,8 @@ namespace localization.tests.Integration
             List<TestInputExpected> inputsAndExpectations = new List<TestInputExpected>()
             {
                 new TestInputExpected("/sv", null),
-                new TestInputExpected("/sv/Home/om", null),
-                new TestInputExpected("/sv/Home/kontakta-oss/", null),
+                new TestInputExpected("/sv/Hem/om", null),
+                new TestInputExpected("/sv/Hem/kontakta-oss/", null),
                 new TestInputExpected("/sv/Example", null),
                 new TestInputExpected("/sv/Example/parameter/24/swedish", null),
             };
@@ -135,9 +135,9 @@ namespace localization.tests.Integration
 
             List<(string Href, string Link)> navigationUrls = new List<(string Href, string Text)>()
             {
-                ( "/sv", "Home"),
-                ( "/sv/Home/om", "Om"),
-                ( "/sv/Home/kontakta-oss", "Kontakta Oss"),
+                ( "/sv", "Hemma"),
+                ( "/sv/Hem/om", "Om"),
+                ( "/sv/Hem/kontakta-oss", "Kontakta Oss"),
                 ( "/sv/Example", "Example"),
                 ( "/sv/Example/Parameter/5/sv", "Parameter"),
                 ( "/sv/Example/Parameter/5/sv", "example param 2")

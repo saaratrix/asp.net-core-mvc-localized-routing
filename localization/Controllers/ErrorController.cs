@@ -17,7 +17,7 @@ namespace localization.Controllers
             return View();
         }
 
-        // Need the [Route] attribute or the error is just a blank screen it doesn't work
+        // Need the [Route] attribute or it doesn't work. It'd just be a blank screen.
         [Route("/Error/{0}")]
         public IActionResult Index(int error)
         {
