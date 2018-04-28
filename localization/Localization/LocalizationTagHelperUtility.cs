@@ -2,26 +2,31 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace localization.Localization
 {
     /// <summary>
-    /// Shared utility between the TagHelpers
+    /// Shared utility between the TagHelpers.
     /// </summary>
     public static class LocalizationTagHelperUtility
     {
-        public static LocalizedUrlResult GetUrlResult(TagHelperContext context, string culture)
+        /// <summary>
+        /// Get the url and url with parameter data if possible.
+        /// </summary>
+        /// <param name="context">The context to get attributes and route values from.</param>
+        /// <param name="culture">The culture to get the url result for.</param>
+        /// <returns></returns>
+        public static LocalizationUrlResult GetUrlResult(TagHelperContext context, string culture)
         {
             string controllerName = context.AllAttributes["asp-controller"].Value as string;
             string actionName = context.AllAttributes["asp-action"].Value as string;
 
-            LocalizedUrlResult urlResult = LocalizationDataHandler.GetUrl(controllerName, actionName, culture);
+            var urlResult = LocalizationRouteDataHandler.GetUrl(controllerName, actionName, culture);
 
             Dictionary<string, string> routeValues = GetRouteValues(context.AllAttributes);
             if (routeValues != null)
             {
-                urlResult.Url += LocalizationDataHandler.GetOrderedParameters(controllerName, actionName, routeValues);
+                urlResult.Url += LocalizationRouteDataHandler.GetOrderedParameters(controllerName, actionName, routeValues);
             }
 
             return urlResult;

@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace localization.Localization
@@ -12,7 +9,7 @@ namespace localization.Localization
     {
         private const string CultureAttributeName = "cms-culture";
         /// <summary>
-        /// The culture attribute
+        /// The culture to use attribute.
         /// </summary>        
         [HtmlAttributeName(CultureAttributeName)]
         public string Culture { get; set; }
@@ -24,7 +21,7 @@ namespace localization.Localization
                 Culture = CultureInfo.CurrentCulture.Name;
             }
 
-            LocalizedUrlResult urlResult = LocalizationTagHelperUtility.GetUrlResult(context, Culture);
+            LocalizationUrlResult urlResult = LocalizationTagHelperUtility.GetUrlResult(context, Culture);
 
             output.Attributes.SetAttribute("action", urlResult.Url);
 

@@ -9,7 +9,7 @@ namespace localization.tests.TestClasses
     {
         public string Controller { get; set; }
         public string Action { get; set; }
-        public string Culture { get; set; } = LocalizationDataHandler.DefaultCulture;
+        public string Culture { get; set; } = LocalizationRouteDataHandler.DefaultCulture;
         public Dictionary<string, string> RouteValues { get; set; } = null;
 
         public TestActionControllerData()

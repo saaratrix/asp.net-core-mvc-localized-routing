@@ -21,9 +21,9 @@ namespace localization.Controllers
     // Routes for each culture:
     // Default: /Example
     // Finnish: /fi/exampleFi
-    // Swedish: /sv/Example     - Takes the name of controller since no [LocalizedRoute] for swedish culture   
+    // Swedish: /sv/Example     - Takes the name of controller since no [LocalizationRoute] for swedish culture   
     // The link text for <a> tags will be ExampleFi
-    [LocalizedRoute("fi", "exampleFi")]    
+    [LocalizationRoute("fi", "exampleFi")]    
     public class ExampleController : LocalizationController
     {        
         public ExampleController()
@@ -38,10 +38,10 @@ namespace localization.Controllers
         // Routes for each culture:
         // Default: /Example/Parameter/{index}/{test}
         // Finnish: /fi/exampleFi/param/{index}/{test}
-        // Swedish: /sv/Example/Parameter/{index}/{test}        - Gets the Action name automatically because no [LocalizedRoute] attribute
+        // Swedish: /sv/Example/Parameter/{index}/{test}        - Gets the Action name automatically because no [LocalizationRoute] attribute
         // [HttpGet("parameter/{index}/{test}")]                - [HttpGet] can be used instead of [Route]
         [Route("parameter/{index}/{test}")]        
-        [LocalizedRoute("fi", "param")]
+        [LocalizationRoute("fi", "param")]
         public IActionResult Parameter(int index, string test)
         {
             ViewData["index"] = index;
@@ -55,7 +55,7 @@ namespace localization.Controllers
         // Finnish: /fi/exampleFi/param
         // Swedish: /sv/Example/Parameter
         [HttpPost()]        
-        [LocalizedRoute("fi", "param")]        
+        [LocalizationRoute("fi", "param")]        
         public IActionResult Parameter(ParameterViewModel model)
         {
             ViewData["index"] = model.Index;

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
+﻿using System.Globalization;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace localization.Localization
@@ -16,24 +11,29 @@ namespace localization.Localization
         private const string CultureAttributeName = "cms-culture";
         private const string KeepLinkAttributeName = "cms-keep-link";
         /// <summary>
-        /// The culture attribute
+        /// The culture to use attribute.
         /// </summary>        
         [HtmlAttributeName(CultureAttributeName)]
         public string Culture { get; set; }
 
+        /// <summary>
+        /// If the anchor tags innerText should kept or not.
+        /// If true the value in the view is kept.
+        /// If false then the value is the LocalizedUrlResult.LinkName .
+        /// </summary>
         [HtmlAttributeName(KeepLinkAttributeName)]
         public bool KeepLink { get; set; } = false;
 
         public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            // This can happen if for example the ViewData["culture"] isn't set
-            // like for the errorcontroller which doesn't inherit from LocalizationController.
+            // This happens for example if cms-culture="" is left empty
+            // Which means the current culture set by the RequestProvider is used.
             if (string.IsNullOrEmpty(Culture))
             {
                 Culture = CultureInfo.CurrentCulture.Name;
             }
 
-            LocalizedUrlResult urlResult = LocalizationTagHelperUtility.GetUrlResult(context, Culture);
+            var urlResult = LocalizationTagHelperUtility.GetUrlResult(context, Culture);
 
             output.Attributes.SetAttribute("href", urlResult.Url);
 

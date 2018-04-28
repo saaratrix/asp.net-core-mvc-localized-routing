@@ -8,41 +8,41 @@ using System.Text;
 namespace localization.tests.UnitTests.Localization
 {
     [TestClass]
-    public class LocalizedRouteAttributeTest
+    public class LocalizationRouteAttributeTest
     {
         // TODO: Constructor tests? 
         [TestMethod]
-        public void LocalizedRouteAttributeConstructorTest()
+        public void LocalizationRouteAttributeConstructorTest()
         {
             List<TestInputExpected> singleParameter = new List<TestInputExpected>()
             {
-                new TestInputExpected(new LocalizedRouteData("en", "", ""), new LocalizedRouteData("en", "", "")),
-                new TestInputExpected(new LocalizedRouteData("fi", "", ""), new LocalizedRouteData("fi", "", "")),
-                new TestInputExpected(new LocalizedRouteData("sv", "", ""), new LocalizedRouteData("sv", "", ""))
+                new TestInputExpected(new LocalizationRouteData("en", "", ""), new LocalizationRouteData("en", "", "")),
+                new TestInputExpected(new LocalizationRouteData("fi", "", ""), new LocalizationRouteData("fi", "", "")),
+                new TestInputExpected(new LocalizationRouteData("sv", "", ""), new LocalizationRouteData("sv", "", ""))
             };
 
             List<TestInputExpected> twoParameters = new List<TestInputExpected>()
             {
-                new TestInputExpected(new LocalizedRouteData("en", "some route", ""), new LocalizedRouteData("en", "some_route", "Some Route")),
-                new TestInputExpected(new LocalizedRouteData("fi", "Testi_testi", ""), new LocalizedRouteData("fi", "Testi_testi", "Testi Testi")),
-                new TestInputExpected(new LocalizedRouteData("sv", "en-test-route", ""), new LocalizedRouteData("sv", "en-test-route", "En Test Route")),
-                new TestInputExpected(new LocalizedRouteData("fi", "exampleFi", ""), new LocalizedRouteData("fi", "exampleFi", "ExampleFi"))
+                new TestInputExpected(new LocalizationRouteData("en", "some route", ""), new LocalizationRouteData("en", "some_route", "Some Route")),
+                new TestInputExpected(new LocalizationRouteData("fi", "Testi_testi", ""), new LocalizationRouteData("fi", "Testi_testi", "Testi Testi")),
+                new TestInputExpected(new LocalizationRouteData("sv", "en-test-route", ""), new LocalizationRouteData("sv", "en-test-route", "En Test Route")),
+                new TestInputExpected(new LocalizationRouteData("fi", "exampleFi", ""), new LocalizationRouteData("fi", "exampleFi", "ExampleFi"))
             };
 
             List<TestInputExpected> allParameters = new List<TestInputExpected>()
             {
-                new TestInputExpected(new LocalizedRouteData("en", "some route", "some batman route"), new LocalizedRouteData("en", "some_route", "some batman route")),                
-                new TestInputExpected(new LocalizedRouteData("sv", "en-test-route", "en test route"), new LocalizedRouteData("sv", "en-test-route", "en test route")),
-                new TestInputExpected(new LocalizedRouteData("fi", "Testi_testi", ""), new LocalizedRouteData("fi", "Testi_testi", "Testi Testi")),
-                new TestInputExpected(new LocalizedRouteData("fi", "Testi_testi", null), new LocalizedRouteData("fi", "Testi_testi", "Testi Testi")),
+                new TestInputExpected(new LocalizationRouteData("en", "some route", "some batman route"), new LocalizationRouteData("en", "some_route", "some batman route")),                
+                new TestInputExpected(new LocalizationRouteData("sv", "en-test-route", "en test route"), new LocalizationRouteData("sv", "en-test-route", "en test route")),
+                new TestInputExpected(new LocalizationRouteData("fi", "Testi_testi", ""), new LocalizationRouteData("fi", "Testi_testi", "Testi Testi")),
+                new TestInputExpected(new LocalizationRouteData("fi", "Testi_testi", null), new LocalizationRouteData("fi", "Testi_testi", "Testi Testi")),
             };
 
             foreach (var test in singleParameter)
             {
-                var input = test.Input as LocalizedRouteData;
-                var expected = test.Expected as LocalizedRouteData;
+                var input = test.Input as LocalizationRouteData;
+                var expected = test.Expected as LocalizationRouteData;
 
-                var attribute = new LocalizedRouteAttribute(input.Culture);
+                var attribute = new LocalizationRouteAttribute(input.Culture);
 
                 Assert.AreEqual(expected.Culture, attribute.Culture, "Single paramater");
                 Assert.AreEqual(expected.Route, attribute.Route, "Single paramater");
@@ -51,10 +51,10 @@ namespace localization.tests.UnitTests.Localization
 
             foreach (var test in twoParameters)
             {
-                var input = test.Input as LocalizedRouteData;
-                var expected = test.Expected as LocalizedRouteData;
+                var input = test.Input as LocalizationRouteData;
+                var expected = test.Expected as LocalizationRouteData;
 
-                var attribute = new LocalizedRouteAttribute(input.Culture, input.Route);
+                var attribute = new LocalizationRouteAttribute(input.Culture, input.Route);
 
                 Assert.AreEqual(expected.Culture, attribute.Culture, "Two Parameters");
                 Assert.AreEqual(expected.Route, attribute.Route, "Two Parameters");
@@ -63,10 +63,10 @@ namespace localization.tests.UnitTests.Localization
 
             foreach (var test in allParameters)
             {
-                var input = test.Input as LocalizedRouteData;
-                var expected = test.Expected as LocalizedRouteData;
+                var input = test.Input as LocalizationRouteData;
+                var expected = test.Expected as LocalizationRouteData;
 
-                var attribute = new LocalizedRouteAttribute(input.Culture, input.Route, input.Link);
+                var attribute = new LocalizationRouteAttribute(input.Culture, input.Route, input.Link);
 
                 Assert.AreEqual(expected.Culture, attribute.Culture, "All parameters");
                 Assert.AreEqual(expected.Route, attribute.Route, "All parameters");
@@ -93,19 +93,19 @@ namespace localization.tests.UnitTests.Localization
                 var input = test.Input as ConvertRouteToLinkInput;
                 string expected = test.Expected as string;
 
-                string result = LocalizedRouteAttribute.ConvertRouteToLink(input.Culture, input.Route);
+                string result = LocalizationRouteAttribute.ConvertRouteToLink(input.Culture, input.Route);
 
                 Assert.AreEqual(expected, result);
             }
         }
 
-        private class LocalizedRouteData
+        private class LocalizationRouteData
         {
             public string Culture { get; set; }
             public string Route { get; set; }
             public string Link { get; set; }
 
-            public LocalizedRouteData(string culture, string route, string link)
+            public LocalizationRouteData(string culture, string route, string link)
             {
                 Culture = culture;
                 Route = route;

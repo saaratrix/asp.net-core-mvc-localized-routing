@@ -5,7 +5,7 @@
     {
         culture = CultureInfo.CurrentCulture.Name;
     }
-    string brandUrl = localization.Localization.LocalizationDataHandler.GetUrl("home", "index", culture).Url;
+    string brandUrl = localization.Localization.LocalizationRouteDataHandler.GetUrl("home", "index", culture).Url;
 
     var routeData = new Dictionary<string, string>() {
             { "test", culture },

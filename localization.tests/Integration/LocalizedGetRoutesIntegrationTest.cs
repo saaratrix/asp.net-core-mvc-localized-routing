@@ -47,7 +47,7 @@ namespace localization.tests.Integration
             _server?.Dispose();
             _client?.Dispose();
             // Need to reset the data handler
-            LocalizationDataHandlerTest.ResetDataHandler();
+            LocalizationRouteDataHandlerTest.ResetDataHandler();
         }
 
         [TestMethod]

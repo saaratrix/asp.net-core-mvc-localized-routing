@@ -8,8 +8,8 @@
         culture = CultureInfo.CurrentCulture.Name;
     }
 
-    string controller = ViewData.ContainsKey("controller") ? ViewData["controller"] as string : LocalizationDataHandler.DefaultController;
-    string action = ViewData.ContainsKey("action") ? ViewData["action"] as string : LocalizationDataHandler.DefaultAction;
+    string controller = ViewData.ContainsKey("controller") ? ViewData["controller"] as string : LocalizationRouteDataHandler.DefaultController;
+    string action = ViewData.ContainsKey("action") ? ViewData["action"] as string : LocalizationRouteDataHandler.DefaultAction;
 
     // Get the route data so parameter data is maintained when changing cultures
     // ViewContext.RouteData.Values seems to always be set, so the `?` is probably unnecessary.
@@ -17,7 +17,7 @@
 }
 
 <ul class="nav navbar-nav navbar-right">
-    @foreach (var kvp in LocalizationDataHandler.SupportedCultures)
+    @foreach (var kvp in LocalizationRouteDataHandler.SupportedCultures)
     {
         // Skip the current culture  
         if (kvp.Key == culture) {

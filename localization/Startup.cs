@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,8 +13,6 @@ using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc;
 
 namespace localization
 {
@@ -43,8 +38,8 @@ namespace localization
             services.AddTransient<IEmailSender, EmailSender>();
 
             // Set up cultures
-            LocalizationDataHandler.DefaultCulture = "en";
-            LocalizationDataHandler.SupportedCultures = new Dictionary<string, string>()
+            LocalizationRouteDataHandler.DefaultCulture = "en";
+            LocalizationRouteDataHandler.SupportedCultures = new Dictionary<string, string>()
             {
                 { "en", "English" },
                 { "fi", "Suomeksi" },
@@ -55,7 +50,7 @@ namespace localization
 
             services.AddMvc(options =>
             {
-                options.Conventions.Add(new LocalizedRouteConvention());
+                options.Conventions.Add(new LocalizationRouteConvention());
             })
             // Views.Shared._Layout is for the /Views/Shared/_Layout.cshtml file
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
@@ -65,9 +60,9 @@ namespace localization
 
             services.Configure<RequestLocalizationOptions>(options =>
             {
-                options.DefaultRequestCulture = new RequestCulture(LocalizationDataHandler.DefaultCulture, LocalizationDataHandler.DefaultCulture);
+                options.DefaultRequestCulture = new RequestCulture(LocalizationRouteDataHandler.DefaultCulture, LocalizationRouteDataHandler.DefaultCulture);
 
-                foreach (var kvp in LocalizationDataHandler.SupportedCultures)
+                foreach (var kvp in LocalizationRouteDataHandler.SupportedCultures)
                 {
                     CultureInfo culture = new CultureInfo(kvp.Key);
                     options.SupportedCultures.Add(culture);
@@ -79,8 +74,6 @@ namespace localization
                     new UrlCultureProvider(options.SupportedCultures)
                 };
             });
-            
-            //services.AddSingleton<IHtmlGenerator, LocalizedHtmlGenerator>();    
         }
 
         // This is so we can override the database configuration for tests
@@ -117,7 +110,7 @@ namespace localization
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}",
-                    defaults: new { culture = LocalizationDataHandler.DefaultCulture }
+                    defaults: new { culture = LocalizationRouteDataHandler.DefaultCulture }
                 );
             });
         }

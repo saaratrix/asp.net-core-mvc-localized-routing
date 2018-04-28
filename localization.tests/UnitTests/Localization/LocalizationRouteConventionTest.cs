@@ -16,25 +16,25 @@ using System.Text;
 namespace LocalizationTests.tests.UnitTests.Localization
 {
     [TestClass]
-    public class LocalizedRouteConventionTest
+    public class LocalizationRouteConventionTest
     {
-        LocalizedRouteConvention _localizedRouteConvention;
+        LocalizationRouteConvention _localizationRouteConvention;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            _localizedRouteConvention = new LocalizedRouteConvention();
+            _localizationRouteConvention = new LocalizationRouteConvention();
         }
 
         [TestMethod]
         public void GetLocalizedControllerNameTest()
         {
             var type = typeof(TestController);
-            ControllerModel testController = new ControllerModel(type.GetTypeInfo(), new List<LocalizedRouteAttribute>()
+            ControllerModel testController = new ControllerModel(type.GetTypeInfo(), new List<LocalizationRouteAttribute>()
             {
-                new LocalizedRouteAttribute("fi", "Testi"),
-                new LocalizedRouteAttribute("sv"),
-                new LocalizedRouteAttribute("ja", "テスト")
+                new LocalizationRouteAttribute("fi", "Testi"),
+                new LocalizationRouteAttribute("sv"),
+                new LocalizationRouteAttribute("ja", "テスト")
             });
             testController.ControllerName = "Test";
 
@@ -52,7 +52,7 @@ namespace LocalizationTests.tests.UnitTests.Localization
                 var input = test.Input as GetLocalizedControllerNameInput;
                 var expected = test.Expected as string;
 
-                string result = _localizedRouteConvention.GetLocalizedControllerName(input.ControllerModel, input.Culture);
+                string result = _localizationRouteConvention.GetLocalizedControllerName(input.ControllerModel, input.Culture);
 
                 Assert.AreEqual(expected, result, "For culture: " + input.Culture);
             }
@@ -75,7 +75,7 @@ namespace LocalizationTests.tests.UnitTests.Localization
                 string inputTemplate = test.Input as string;
                 List<string> sortedRouteParameters = new List<string>();
                 var expected = test.Expected as ParseParameterTemplateExpected;
-                string parameterTemplate = _localizedRouteConvention.ParseParameterTemplate(inputTemplate, sortedRouteParameters);
+                string parameterTemplate = _localizationRouteConvention.ParseParameterTemplate(inputTemplate, sortedRouteParameters);
 
                 Assert.AreEqual(expected.ParameterTemplate, parameterTemplate);
                 CollectionAssert.AreEqual(expected.SortedRouteParameters, sortedRouteParameters);
@@ -101,7 +101,7 @@ namespace LocalizationTests.tests.UnitTests.Localization
             {
                 string input = test.Input as string;
                 string expected = test.Expected as string;
-                string name = _localizedRouteConvention.GetParameterName(input);
+                string name = _localizationRouteConvention.GetParameterName(input);
 
                 Assert.AreEqual(expected, name);
             }

@@ -10,15 +10,15 @@ using localization.Localization;
 namespace localization.Controllers
 {
     /*
-     * This HomeController is an example of using the [LocalizedRoute] attribute for different cultures and the link text.
+     * This HomeController is an example of using the [LocalizationRoute] attribute for different cultures and the link text.
     */
 
     // Routes for each culture:
     // Default: /Home           - / for the Index action
     // Finnish: /fi/koti        - /fi for the Index action.
     // Swedish: /sv/Hem         - /sv for the Index action.
-    [LocalizedRoute("fi", "koti")]        
-    [LocalizedRoute("sv", "Hem", "Hemma")] // The link text for <a>linktext</a> will be Hemma    
+    [LocalizationRoute("fi", "koti")]        
+    [LocalizationRoute("sv", "Hem", "Hemma")] // The link text for <a>linktext</a> will be Hemma    
     public class HomeController : LocalizationController
     {
         public IActionResult Index()
@@ -30,8 +30,8 @@ namespace localization.Controllers
         // Default: /Home/About
         // Finnish: /fi/koti/meistä
         // Swedish: /sv/Hem/om
-        [LocalizedRoute("fi", "meistä")]
-        [LocalizedRoute("sv", "om")]
+        [LocalizationRoute("fi", "meistä")]
+        [LocalizationRoute("sv", "om")]
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
@@ -39,8 +39,8 @@ namespace localization.Controllers
             return View();
         }
         
-        [LocalizedRoute("fi", "ota_yhteyttä")]                  // Automatically converts ota_yhteyttä to Ota Yhteyttä for the link text       
-        [LocalizedRoute("sv", "kontakta-oss", "Kontakta Oss")]  // Explicitly tell the link text to be Kontakta Oss
+        [LocalizationRoute("fi", "ota_yhteyttä")]                  // Automatically converts ota_yhteyttä to Ota Yhteyttä for the link text       
+        [LocalizationRoute("sv", "kontakta-oss", "Kontakta Oss")]  // Explicitly tell the link text to be Kontakta Oss
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";

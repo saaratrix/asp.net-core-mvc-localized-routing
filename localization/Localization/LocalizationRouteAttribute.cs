@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 
 namespace localization.Localization
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]   
-    public class LocalizedRouteAttribute : Attribute
+    public class LocalizationRouteAttribute : Attribute
     {
         /// <summary>
         /// The character to replace whitespace with in the input route, like 
@@ -36,11 +32,11 @@ namespace localization.Localization
         /// </summary>
         public string Link { get; set; }
 
-        public LocalizedRouteAttribute()
+        public LocalizationRouteAttribute()
         {                        
         }
 
-        public LocalizedRouteAttribute(string culture)
+        public LocalizationRouteAttribute(string culture)
             :this(culture, "", null)
         {
 
@@ -52,7 +48,7 @@ namespace localization.Localization
         /// </summary>
         /// <param name="culture"></param>
         /// <param name="route"></param>
-        public LocalizedRouteAttribute(string culture, string route)
+        public LocalizationRouteAttribute(string culture, string route)
            : this(culture, route, null)
         {
 
@@ -64,7 +60,7 @@ namespace localization.Localization
         /// <param name="culture"></param>
         /// <param name="route"></param>
         /// <param name="link">If not defined the value is route with first letter capitalized</param>
-        public LocalizedRouteAttribute(string culture, string route, string link)
+        public LocalizationRouteAttribute(string culture, string route, string link)
         {
             Culture = culture;
             Route = route;
