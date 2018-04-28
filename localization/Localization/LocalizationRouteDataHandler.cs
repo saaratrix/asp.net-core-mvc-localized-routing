@@ -140,7 +140,7 @@ namespace localization.Localization
                         }
                     }                    
 
-                    // So that the url is controller/action instead of controlleraction
+                    // So that the url is {controller}/{action} instead of {controller}{action}
                     if (!isDefaultAction)
                     {                                      
                         controllerUrl += "/";

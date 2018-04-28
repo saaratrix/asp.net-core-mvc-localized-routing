@@ -102,7 +102,7 @@ namespace localization.Localization
             var controllerLocalizations = controllerModel.Attributes.OfType<LocalizationRouteAttribute>().ToList();            
             string controllerName = controllerModel.ControllerName;
 
-            // Keep track of which cultures did not have a [LocalizedRoute] attribute so they can have one added programatically.         
+            // Keep track of which cultures did not have a [LocalizedRoute] attribute so they can have one added programmatically.
             HashSet<string> notFoundCultures = LocalizationRouteDataHandler.SupportedCultures.Select(kvp => kvp.Key).ToHashSet();
             notFoundCultures.Remove(LocalizationRouteDataHandler.DefaultCulture);
 
@@ -268,7 +268,7 @@ namespace localization.Localization
             {
                 string route = attribute.Route + parameterTemplate;
                 // This copies all existing Attributes on the ActionModel,  [Route] [HttpGet] e.t.c.
-                // Sourcefile: https://github.com/aspnet/Mvc/blob/dev/src/Microsoft.AspNetCore.Mvc.Core/ApplicationModels/ActionModel.cs
+                // Source file: https://github.com/aspnet/Mvc/blob/dev/src/Microsoft.AspNetCore.Mvc.Core/ApplicationModels/ActionModel.cs
                 ActionModel newLocalizedActionModel = new ActionModel(actionModel);
 
                 // Clear the Selectors or it will have shared selector data from default route.
@@ -340,7 +340,7 @@ namespace localization.Localization
 
         /// <summary>
         /// Parses the input template and returns a parsed template that only contains the {parameter} values.
-        /// It also adds parameters it encounters to the sortedRouteParamaters list.
+        /// It also adds parameters it encounters to the sortedRouteParameters list.
         /// </summary>
         /// <param name="template"></param>
         /// <param name="sortedRouteParameters"></param>
@@ -354,7 +354,7 @@ namespace localization.Localization
             for (int i = 0; i < actionComponents.Length; i++)
             {
                 string actionComponent = actionComponents[i];
-                // Incase of "/action/" 
+                // In case of "/action/"
                 if (actionComponent.Length == 0)
                 {
                     continue;
