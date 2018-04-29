@@ -102,11 +102,11 @@ namespace localization.Localization
             var controllerLocalizations = controllerModel.Attributes.OfType<LocalizationRouteAttribute>().ToList();            
             string controllerName = controllerModel.ControllerName;
 
-            // Keep track of which cultures did not have a [LocalizedRoute] attribute so they can have one added programmatically.
+            // Keep track of which cultures did not have a [LocalizationRoute] attribute so they can have one added programmatically.
             HashSet<string> notFoundCultures = LocalizationRouteDataHandler.SupportedCultures.Select(kvp => kvp.Key).ToHashSet();
             notFoundCultures.Remove(LocalizationRouteDataHandler.DefaultCulture);
 
-            // Loop over all localized attributes
+            // Loop over all [LocalizationRoute] attributes
             foreach (LocalizationRouteAttribute attribute in controllerLocalizations)
             {
                 string template = attribute.Culture;

@@ -11,6 +11,10 @@ namespace localization.Localization
         private const string CultureAttributeName = "cms-culture";
         private const string KeepLinkAttributeName = "cms-keep-link";
         /// <summary>
+        /// The default value to use if no cms-keep-link attribute.
+        /// </summary>
+        public static bool KeepLinkDefault = false;
+        /// <summary>
         /// The culture to use attribute.
         /// </summary>        
         [HtmlAttributeName(CultureAttributeName)]
@@ -18,11 +22,11 @@ namespace localization.Localization
 
         /// <summary>
         /// If the anchor tags innerText should kept or not.
-        /// If true the value in the view is kept.
-        /// If false then the value is the LocalizedUrlResult.LinkName .
+        /// If true the explicit value between the <a>value</a>.
+        /// If false then the value is the result from LocalizationUrlResult.LinkName.
         /// </summary>
         [HtmlAttributeName(KeepLinkAttributeName)]
-        public bool KeepLink { get; set; } = false;
+        public bool KeepLink { get; set; } = KeepLinkDefault;
 
         public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
