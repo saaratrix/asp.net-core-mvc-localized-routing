@@ -1,101 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Globalization;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace localization.Localization
 {
     [HtmlTargetElement("a", Attributes = CultureAttributeName)]
+    [HtmlTargetElement("a", Attributes = KeepLinkAttributeName)]    
     public class CultureActionLinkTagHelper : TagHelper
-    {   
-        private const string CultureAttributeName = "cms-culture";        
+    {
+        private const string CultureAttributeName = "cms-culture";
+        private const string KeepLinkAttributeName = "cms-keep-link";
         /// <summary>
-        /// The culture attribute
+        /// The default value to use if no cms-keep-link attribute.
+        /// </summary>
+        public static bool KeepLinkDefault = false;
+        /// <summary>
+        /// The culture to use attribute.
         /// </summary>        
         [HtmlAttributeName(CultureAttributeName)]
         public string Culture { get; set; }
 
+        /// <summary>
+        /// If the anchor tags innerText should kept or not.
+        /// If true the explicit value between the <a>value</a>.
+        /// If false then the value is the result from LocalizationUrlResult.LinkName.
+        /// </summary>
+        [HtmlAttributeName(KeepLinkAttributeName)]
+        public bool KeepLink { get; set; } = KeepLinkDefault;
+
         public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
-        {   
+        {
+            // This happens for example if cms-culture="" is left empty
+            // Which means the current culture set by the RequestProvider is used.
             if (string.IsNullOrEmpty(Culture))
             {
-                Culture = LocalizationDataHandler.DefaultCulture;
+                Culture = CultureInfo.CurrentCulture.Name;
             }
 
-            // The url for <a href="">
-            string finalHref;
+            var urlResult = LocalizationTagHelperUtility.GetUrlResult(context, Culture);
 
-            // Get the original attribute so we can add asp-route-... values
-            TagHelperAttribute hrefAttribute = output.Attributes.FirstOrDefault(x => x.Name == "href");
-            string originalHref = hrefAttribute.Value as string;
+            output.Attributes.SetAttribute("href", urlResult.Url);
 
-            string originalCulture = LocalizationDataHandler.GetCultureFromUrl(originalHref);
-
-            // Get the controllerName and actionName
-            string controllerName = context.AllAttributes["asp-controller"].Value as string;
-            string actionName = context.AllAttributes["asp-action"].Value as string;
-
-            LocalizedUrlResult result = LocalizationDataHandler.GetUrl(controllerName, actionName, Culture);
-
-            // If the two cultures don't match then replace the originalHref URL part with the new result URL
-            // So that the URL is non-destructive of any other parts that's on the URL such as #? or /parameter1/parameter2
-            if (originalCulture != Culture)
+            if (!KeepLink && urlResult.LinkName != "")
             {
-                LocalizedUrlResult originalResult = LocalizationDataHandler.GetUrl(controllerName, actionName, originalCulture);
-
-                // Use Uri instead and add fragment & query after reconstructing base url?
-                // Currently doesn't take that into account very well
-                string resultUrl = result.Url;
-                // Add / if last character isn't a /
-                if (resultUrl[ resultUrl.Length - 1 ] != '/')
-                {
-                    resultUrl = resultUrl + "/";
-                }
-
-                int originalPartsCount = originalResult.Url.Count(x => x == '/');
-                int partsFound = 0;
-
-                StringBuilder sb = new StringBuilder(resultUrl);
-                foreach (char letter in originalHref)
-                {
-                    if (partsFound <= originalPartsCount)
-                    {
-                        if (letter == '/')
-                        {
-                            partsFound++;
-                        }
-                        else if (letter == '?')
-                        {
-                            partsFound = originalPartsCount;
-                        }
-                        else if (letter == '#')
-                        {
-                            partsFound = originalPartsCount;
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(letter);
-                    }
-                }
-
-                finalHref = sb.ToString();
-            }
-            else
-            {
-                // Currently this makes default controller ( Home ) the url:
-                // "/Home/{Action}"   but for finnish & swedish it's just /fi/{Action}  and /sv/{Action}
-                // Meaning the controller name for finnish & swedish is actually /fi/ and /sv/! 
-                finalHref = originalHref;
-            }
-            
-            output.Attributes.SetAttribute("href", finalHref);
-            if (result.LinkName != "")
-            {   
-                output.Content.SetContent(result.LinkName);
+                output.Content.SetContent(urlResult.LinkName);
             }
 
             return Task.FromResult(0);

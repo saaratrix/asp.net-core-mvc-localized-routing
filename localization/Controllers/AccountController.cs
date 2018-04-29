@@ -17,7 +17,9 @@ using localization.Localization;
 
 namespace localization.Controllers
 {
-    [Authorize]    
+    [Authorize]
+    [Route("[controller]/[action]")]
+    [LocalizationRoute("sv", "konto")]
     public class AccountController : LocalizationController
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -42,7 +44,7 @@ namespace localization.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [LocalizedRoute("sv", "logga-in", "Logga in")]
+        [LocalizationRoute("sv", "logga-in", "Logga in")]
         public async Task<IActionResult> Login(string returnUrl = null)
         {
             // Clear the existing external cookie to ensure a clean login process
@@ -55,7 +57,7 @@ namespace localization.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [LocalizedRoute("sv", "logga-in", "Logga in")]
+        [LocalizationRoute("sv", "logga-in", "Logga in")]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -208,7 +210,7 @@ namespace localization.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [LocalizedRoute("sv", "registrering", "Registrera dig!")]
+        [LocalizationRoute("sv", "registrering", "Registrera dig!")]
         public IActionResult Register(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -218,7 +220,7 @@ namespace localization.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        [LocalizedRoute("sv", "registrering", "Registrera dig!")]
+        [LocalizationRoute("sv", "registrering", "Registrera dig!")]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;

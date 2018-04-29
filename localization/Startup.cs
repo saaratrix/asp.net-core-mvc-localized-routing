@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +11,8 @@ using localization.Services;
 using localization.Localization;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.Options;
 
 namespace localization
 {
@@ -29,8 +28,7 @@ namespace localization
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            ConfigureDatabase(services);
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -40,42 +38,56 @@ namespace localization
             services.AddTransient<IEmailSender, EmailSender>();
 
             // Set up cultures
-            LocalizationDataHandler.DefaultCulture = "en";
-            LocalizationDataHandler.SupportedCultures = new List<string>()
+            LocalizationRouteDataHandler.DefaultCulture = "en";
+            LocalizationRouteDataHandler.SupportedCultures = new Dictionary<string, string>()
             {
-                "en",
-                "fi",
-                "sv"
+                { "en", "English" },
+                { "fi", "Suomeksi" },
+                { "sv", "Svenska" }
             };
+
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             services.AddMvc(options =>
             {
-                options.Conventions.Add(new LocalizedRouteConvention());
+                options.Conventions.Add(new LocalizationRouteConvention());
+            })
+            // Views.Shared._Layout is for the /Views/Shared/_Layout.cshtml file
+            .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+            // Add support for localizing strings in data annotations (e.g. validation messages) via the
+            // IStringLocalizer abstractions.
+            .AddDataAnnotationsLocalization();
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture(LocalizationRouteDataHandler.DefaultCulture, LocalizationRouteDataHandler.DefaultCulture);
+
+                foreach (var kvp in LocalizationRouteDataHandler.SupportedCultures)
+                {
+                    CultureInfo culture = new CultureInfo(kvp.Key);
+                    options.SupportedCultures.Add(culture);
+                    options.SupportedUICultures.Add(culture);
+                }
+
+                options.RequestCultureProviders = new List<IRequestCultureProvider>()
+                {
+                    new UrlCultureProvider(options.SupportedCultures)
+                };
             });
-            services.AddLocalization();
+        }
+
+        // This is so we can override the database configuration for tests
+        public virtual void ConfigureDatabase(IServiceCollection services)
+        {
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            RequestCulture defaultCulture = new RequestCulture(LocalizationDataHandler.DefaultCulture);
-            RequestLocalizationOptions requestLocalizationOptions = new RequestLocalizationOptions()
-            {
-                DefaultRequestCulture = defaultCulture,
-                SupportedCultures = new List<CultureInfo>()
-            };
-            
-            foreach (string culture in LocalizationDataHandler.SupportedCultures)
-            {
-                requestLocalizationOptions.SupportedCultures.Add(new CultureInfo(culture));
-            }            
-
-            requestLocalizationOptions.RequestCultureProviders = new List<IRequestCultureProvider>()
-            {
-                new UrlCultureProvider(requestLocalizationOptions.SupportedCultures)
-            };            
-
-            app.UseRequestLocalization(requestLocalizationOptions);
+            var localizationOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            app.UseRequestLocalization(localizationOptions.Value);            
 
             if (env.IsDevelopment())
             {
@@ -85,10 +97,12 @@ namespace localization
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");                           
             }
+            // This is to catch 404s e.t.c.
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
-            app.UseStaticFiles();
+            app.UseStaticFiles();            
 
             app.UseAuthentication();
             app.UseMvc(routes =>
@@ -96,7 +110,7 @@ namespace localization
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}",
-                    defaults: new { culture = LocalizationDataHandler.DefaultCulture }
+                    defaults: new { culture = LocalizationRouteDataHandler.DefaultCulture }
                 );
             });
         }

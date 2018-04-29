@@ -13,12 +13,14 @@ using Microsoft.Extensions.Options;
 using localization.Models;
 using localization.Models.ManageViewModels;
 using localization.Services;
+using localization.Localization;
 
 namespace localization.Controllers
 {
     [Authorize]
     [Route("[controller]/[action]")]
-    public class ManageController : Controller
+    [LocalizationRoute("sv", "hantering")]
+    public class ManageController : LocalizationController
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
