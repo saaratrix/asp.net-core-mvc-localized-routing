@@ -18,6 +18,7 @@ using localization.Localization;
 namespace localization.Controllers
 {
     [Authorize]
+    [Route("[controller]/[action]")]
     [LocalizationRoute("sv", "hantering")]
     public class ManageController : LocalizationController
     {
