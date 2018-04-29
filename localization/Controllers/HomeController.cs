@@ -39,6 +39,10 @@ namespace localization.Controllers
             return View();
         }
         
+        // Routes for each culture:
+        // Default: /Home/Contact
+        // Finnish: /fi/koti/ota_yhteyttä
+        // Swedish: /sv/Hem/kontakta-oss
         [LocalizationRoute("fi", "ota_yhteyttä")]                  // Automatically converts ota_yhteyttä to Ota Yhteyttä for the link text       
         [LocalizationRoute("sv", "kontakta-oss", "Kontakta Oss")]  // Explicitly tell the link text to be Kontakta Oss
         public IActionResult Contact()

@@ -11,7 +11,7 @@ namespace localization.Localization.CultureRouteData
         /// <summary>
         /// Different action names in different cultures.
         /// </summary>
-        public ConcurrentDictionary<string, CultureActionNameRouteData> UrlData { get; }
+        public ConcurrentDictionary<string, CultureUrlRouteData> UrlData { get; }
 
         /// <summary>
         /// The parameters by name sorted in order.
@@ -23,7 +23,7 @@ namespace localization.Localization.CultureRouteData
 
         public CultureActionRouteData(List<string> parametersData)
         {
-            UrlData = new ConcurrentDictionary<string, CultureActionNameRouteData>();            
+            UrlData = new ConcurrentDictionary<string, CultureUrlRouteData>();            
             // If the parameters data has any entries then convert it to a read only list.
             if (parametersData.Count > 0)
             {

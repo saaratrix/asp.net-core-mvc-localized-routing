@@ -3,7 +3,7 @@
     /// <summary>
     /// The route data for each culture for an action in CultureActionData.
     /// </summary>
-    public class CultureActionNameRouteData
+    public class CultureUrlRouteData
     {
         public readonly string Route;
         /// <summary>
@@ -12,7 +12,7 @@
         /// </summary>
         public readonly string Link;     
 
-        public CultureActionNameRouteData(string route, string link)
+        public CultureUrlRouteData(string route, string link)
         {
             Route = route;
             Link = link;

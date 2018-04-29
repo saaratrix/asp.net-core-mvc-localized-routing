@@ -83,7 +83,7 @@ namespace localization.Localization
                 controllerData.Actions.TryAdd(actionKey, new CultureActionRouteData(routeParameters));
             }           
 
-            controllerData.Actions[actionKey].UrlData.TryAdd(culture, new CultureActionNameRouteData(route, linkName));
+            controllerData.Actions[actionKey].UrlData.TryAdd(culture, new CultureUrlRouteData(route, linkName));
         }
         
         /// <summary>
@@ -111,7 +111,7 @@ namespace localization.Localization
 
                     // Ok now we have the controller name and action data name!
                     CultureActionRouteData actionData = controllerData.Actions[actionKey];
-                    CultureActionNameRouteData linkData = actionData.UrlData.ContainsKey(culture) ? actionData.UrlData[culture] : actionData.UrlData[DefaultCulture];
+                    CultureUrlRouteData linkData = actionData.UrlData.ContainsKey(culture) ? actionData.UrlData[culture] : actionData.UrlData[DefaultCulture];
                     
                     string controllerUrl = controllerData.Names.ContainsKey(culture) ? controllerData.Names[culture] : "";
                     // The actionUrl is "" for default action
