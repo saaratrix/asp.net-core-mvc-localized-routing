@@ -1,14 +1,14 @@
 This has information about what classes and methods are being tested.
 
 # Unit tests
-- LocalizationDataHandler
+- LocalizationRouteDataHandler
     - GetUrl()
     - GetOrderedParameters()
     - GetCultureFromUrl()
-- LocalizedRouteAttribute
+- LocalizationRouteAttribute
     - Constructor()
     - ConvertRouteToLink()
-- LocalizedRouteConvention
+- LocalizationRouteConvention
     - GetLocalizedControllerName()
     - ParseParameterTemplate()
     - GetParameterName()
