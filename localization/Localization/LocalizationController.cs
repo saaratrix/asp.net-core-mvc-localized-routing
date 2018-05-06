@@ -10,8 +10,7 @@ namespace localization.Localization
         {            
             base.OnActionExecuting(context);            
             
-            string culture = CultureInfo.CurrentCulture.Name;
-            ViewData["culture"] = culture;
+            ViewData["culture"] = CultureInfo.CurrentCulture.Name;
             ViewData["controller"] = ControllerContext.ActionDescriptor.ControllerName;
             ViewData["action"] = ControllerContext.ActionDescriptor.ActionName;
         }  

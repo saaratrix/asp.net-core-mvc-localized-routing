@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace localization.Localization
@@ -16,15 +17,16 @@ namespace localization.Localization
         /// The characters to split a route on to generate a more link friendly url.
         /// For example some_route => Some Route
         /// </summary>
-        private static char[] RouteToLinkSplitLetters = new char[] { '_', '-' };
+        private static char[] RouteToLinkSplitCharacters = new char[] { '_', '-' };
 
         /// <summary>
-        /// The culture string representation, en, en-Us e.t.c.!
+        /// The culture string representation, en, fi, sv e.t.c.!
         /// </summary>
         public string Culture { get; set; }
         /// <summary>
         /// The route, no need for /.
         /// It is case sensitive.
+        /// Meaning "roUTe" would create the route "/roUTe"
         /// </summary>
         public string Route { get; set; }
         /// <summary>
@@ -87,33 +89,30 @@ namespace localization.Localization
         /// <returns></returns>
         public static string ConvertRouteToLink(string culture, string route)
         {
-            CultureInfo cultureInfo = new CultureInfo(culture, false);
-            TextInfo textInfo = cultureInfo.TextInfo;
+            CultureInfo cultureInfo = new CultureInfo(culture, false);            
 
-            string link = "";
-            string[] routeParts = route.Split(RouteToLinkSplitLetters);
+            string[] routeParts = route.Split(RouteToLinkSplitCharacters);
+            List<string> parsedParts = new List<string>();
 
             for (int i = 0; i < routeParts.Length; i++)
             {
-                string part = routeParts[i];
-                if (part.Length == 0)
+                string routePart = routeParts[i];
+                if (routePart.Length == 0)
                 {
                     continue;
-                }
-                
-                if (link.Length > 0 && link[link.Length - 1] != WhiteSpaceReplacement)
-                {
-                    link += " ";
-                }
+                }                
+                // The reason for doing this instead of TextInfo.ToTitleCase()
+                // Is because ToTitleCase would convert batMAN to Batman instead of BatMAN.
 
-                link += Char.ToUpper(part[0], cultureInfo);
-                if (part.Length > 1)
-                {
-                    link += part.Substring(1);
-                }
-            }
-           
-            return link;
+                // Uppercase first letter
+                char letter = Char.ToUpper(routePart[0], cultureInfo);
+                // Then add the rest!
+                routePart = routePart.Length > 1 ? routePart.Substring(1) : "";
+
+                parsedParts.Add(letter + routePart);                
+            }           
+
+            return String.Join(" ", parsedParts);
         }        
     }
 }

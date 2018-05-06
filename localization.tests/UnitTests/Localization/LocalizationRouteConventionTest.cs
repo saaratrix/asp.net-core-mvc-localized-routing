@@ -1,17 +1,9 @@
 ﻿using localization.Localization;
 using localization.tests.TestClasses;
-using localization.tests.UnitTests.Localization;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.Internal;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace LocalizationTests.tests.UnitTests.Localization
 {

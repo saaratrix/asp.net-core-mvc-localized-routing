@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Collections.Generic;
 
 namespace localization.Localization.CultureRouteData
 {
@@ -14,17 +14,17 @@ namespace localization.Localization.CultureRouteData
         /// en: Home
         /// fi: fi/koti
         /// </summary>
-        public ConcurrentDictionary<string, string> Names { get; }
+        public Dictionary<string, string> Names { get; }
 
         /// <summary>
         /// The actions for the controller.
         /// </summary>
-        public ConcurrentDictionary<string, CultureActionRouteData> Actions { get; }
+        public Dictionary<string, CultureActionRouteData> Actions { get; }
 
         public CultureControllerRouteData()
         {
-            Names = new ConcurrentDictionary<string, string>();
-            Actions = new ConcurrentDictionary<string, CultureActionRouteData>();
+            Names = new Dictionary<string, string>();
+            Actions = new Dictionary<string, CultureActionRouteData>();
         }
     }
 }

@@ -9,17 +9,17 @@ namespace localization.Localization
 {
     /// <summary>
     /// Determines the culture information for a request via the value of the start of a url.
-    /// Needs to be used in Startup.ConfigureServices()
+    /// Needs to be used in Startup.ConfigureServices().
     /// </summary>
     public class UrlCultureProvider : RequestCultureProvider
     {       
         /// <summary>
-        /// The default culture if none is found
+        /// The default culture if none is found.
         /// </summary>
         public string DefaultCulture { get; set; } = LocalizationRouteDataHandler.DefaultCulture;
 
         /// <summary>
-        /// The supported cultures from url
+        /// The supported cultures from url.
         /// </summary>
         public IList<CultureInfo> SupportedCultures {get; set;}
 
