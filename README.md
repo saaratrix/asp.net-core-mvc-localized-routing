@@ -8,5 +8,35 @@ A convention is added in Startup.cs to iterate over all the controllers and acti
 
 Code used for the blogpost: http://saaratrix.blogspot.se/2017/12/localized-routing-aspnet-core-mvc-2.html
 
-For the old solution for [ASP.NET MVC Core 1.0 release candidate 1](https://github.com/haestflod/asp.net-mvc-core-1.0-localized-routing/tree/core-1.0-rc-1)
+For the old solution for [ASP.NET Core 1.0 MVC release candidate 1](../../tree/core-1.0-rc-1)
+
+Example usage for a controller:
+```
+    // Routes for each culture:
+    // Default: /Home           - / for the Index action
+    // Finnish: /fi/koti        - /fi for the Index action.
+    // Swedish: /sv/Hem         - /sv for the Index action.
+    [LocalizationRoute("fi", "koti")]
+    [LocalizationRoute("sv", "Hem", "Hemma")] // The link text for <a>linktext</a> will be Hemma
+    public class HomeController : LocalizationController
+    {
+        public IActionResult Index()
+        {
+            return View();
+        }
+        
+        // Routes for each culture:
+        // Default: /Home/About
+        // Finnish: /fi/koti/meistä
+        // Swedish: /sv/Hem/om
+        [LocalizationRoute("fi", "meistä")]
+        [LocalizationRoute("sv", "om")]
+        public IActionResult About()
+        {
+            return View();
+        }
+    }
+```
+
+
 

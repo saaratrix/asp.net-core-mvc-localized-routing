@@ -1,9 +1,7 @@
 ﻿using localization.Localization;
 using localization.tests.TestClasses;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace localization.tests.UnitTests.Localization
 {

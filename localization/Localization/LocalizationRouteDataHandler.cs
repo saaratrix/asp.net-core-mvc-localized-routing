@@ -1,6 +1,5 @@
 ﻿using localization.Localization.CultureRouteData;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace localization.Localization
@@ -31,7 +30,7 @@ namespace localization.Localization
         // Home { 
         //      Names = [ home, fi/koti ],  
         //      Actions = { 
-        //          Index = {
+        //          About = {
         //              UrlData = {
         //                  en = { Url = about, Link = About },
         //                  fi = { Url = meistä, Link = Meistä }
@@ -43,8 +42,8 @@ namespace localization.Localization
         /// <summary>
         /// All the routes and their cultural representation.        
         /// </summary>
-        // Will never get modified after initialization is done.
-        public static ConcurrentDictionary<string, CultureControllerRouteData> ControllerRoutes { get; } = new ConcurrentDictionary<string, CultureControllerRouteData>();
+        // Will never get modified after initialization is done so Dictionary should be thread safe.        
+        public static Dictionary<string, CultureControllerRouteData> ControllerRoutes { get; } = new Dictionary<string, CultureControllerRouteData>();
 
         /// <summary>
         /// Add Controller Route data 

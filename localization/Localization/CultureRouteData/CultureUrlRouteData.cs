@@ -4,7 +4,7 @@
     /// The route data for each culture for an action in CultureActionData.
     /// </summary>
     public class CultureUrlRouteData
-    {
+    {        
         public readonly string Route;
         /// <summary>
         /// The innerText for an anchor tag when you use the anchor tag helper.

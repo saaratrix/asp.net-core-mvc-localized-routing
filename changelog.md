@@ -10,12 +10,12 @@
     - Fixed bug where actions could be double. 
         [#7](../../issues/7)
 * LocalizationRouteDataHandlers
-    - Changed SupportedCultures from type `List<string>` to `HashSet<string>`
+    - Changed SupportedCultures from type `List<string>` to `Dictionary<string, string>`
     - Added GetOrderedParameters() that based on input routeValues returns tries to return the values in correct order.   
 * LocalizationRouteAttribute
-    - When it generates the LinkName it also breaks on `-` in addition to `_`. 
+    - When it generates the LinkName it also adds whitespace for `-` in addition to `_`. 
         This is controlled with a static property `RouteToLinkSplitLetters` 
-    - Added `ConvertRouteToLink` that converts a route to a link name value.
+    - Added static function `ConvertRouteToLink` that converts a route to a link name value.
 * LocalizedRouteConvention
     - Removed DefaultCulture property. The convention uses `LocalizationRouteDataHandlers.DefaultCulture` instead.
     - Fixed bug where `/culture/` wouldn't work for default controller as a valid route. 

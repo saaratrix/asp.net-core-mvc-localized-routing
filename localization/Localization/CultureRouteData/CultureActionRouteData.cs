@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace localization.Localization.CultureRouteData
 {
@@ -10,8 +9,9 @@ namespace localization.Localization.CultureRouteData
     {
         /// <summary>
         /// Different action names in different cultures.
+        /// The keys are the cultures.
         /// </summary>
-        public ConcurrentDictionary<string, CultureUrlRouteData> UrlData { get; }
+        public Dictionary<string, CultureUrlRouteData> UrlData { get; }
 
         /// <summary>
         /// The parameters by name sorted in order.
@@ -23,8 +23,8 @@ namespace localization.Localization.CultureRouteData
 
         public CultureActionRouteData(List<string> parametersData)
         {
-            UrlData = new ConcurrentDictionary<string, CultureUrlRouteData>();            
-            // If the parameters data has any entries then convert it to a read only list.
+            UrlData = new Dictionary<string, CultureUrlRouteData>();            
+            // If the parameters data has any entries then convert it to a read only array.
             if (parametersData.Count > 0)
             {
                 ParametersData = parametersData.ToArray();
