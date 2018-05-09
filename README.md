@@ -52,6 +52,6 @@ And example of using the CultureActionLinkTagHelper in the views for the anchor 
     // Leaving cms-culture="" empty will use the current request culture.
     // If user is at /fi/... then finnish culture is used then the generated html would be:
     // <a href="/fi/koti/meistä">Meistä</a>
-    // <a asp-controller="home" asp-action="about" cms-culture="">Home</a>
+    <a asp-controller="home" asp-action="about" cms-culture="">Home</a>
 ```
 
