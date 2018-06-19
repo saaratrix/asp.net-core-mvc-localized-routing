@@ -4,7 +4,7 @@ A route localization example for ASP.NET Core 2.1 MVC.
 The solution uses attributes on the controllers and actions to determine the localized routes for each different culture. 
 A convention is added in Startup.cs to iterate over all the controllers and actions to set their routes based on the `[LocalizationRoute]` attributes. 
 
-Code used for the blogpost: http://saaratrix.blogspot.com/2017/12/localized-routing-aspnet-core-mvc-2.html
+Code used for the blog post: https://saaratrix.blogspot.com/2017/12/localized-routing-aspnet-core-mvc-2.html
 
 For the old solution for [ASP.NET Core 1.0 MVC release candidate 1](../../tree/core-1.0-rc-1)
 
