@@ -38,18 +38,18 @@ Example usage for a controller:
 
 And example of using the CultureActionLinkTagHelper in the views for the anchor element.
 ```
-    // Generated html: <a href="/Home/About">Home</a>
-    <a asp-controller="home" asp-action="about" cms-culture="en">Home</a>
+    // Generated html: <a href="/Home/About">About</a>
+    <a asp-controller="home" asp-action="about" cms-culture="en">About</a>
 
     // Generated html: <a href="/fi/koti/meistä">Meistä</a>
-    <a asp-controller="home" asp-action="about" cms-culture="fi">Home</a>
+    <a asp-controller="home" asp-action="about" cms-culture="fi">About</a>
 
-    // Generated html: <a href="/sv/Hem/om">Hemma</a>
-    <a asp-controller="home" asp-action="about" cms-culture="sv">Home</a>
+    // Generated html: <a href="/sv/Hem/om">Om</a>
+    <a asp-controller="home" asp-action="about" cms-culture="sv">About</a>
 
     // Leaving cms-culture="" empty will use the current request culture.
     // If user is at /fi/... then finnish culture is used then the generated html would be:
     // <a href="/fi/koti/meistä">Meistä</a>
-    <a asp-controller="home" asp-action="about" cms-culture="">Home</a>
+    <a asp-controller="home" asp-action="about" cms-culture="">About</a>
 ```
 
