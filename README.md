@@ -56,7 +56,7 @@ And example of using the CultureActionLinkTagHelper in the views for the anchor 
 To set up the localization you need to include it in Startup.cs or an equivalent file in your project.
 The method everything is set up in is:  
 `public void ConfigureServices(IServiceCollection services)` 
-In this method settings such as what the supported cultures are.
+In this method we set settings such as what the supported cultures are.
 You could set the DefaultCulture and SupportedCultures directly in the LocalizationRouteDataHandler.cs class as well.
 Example usage with 3 cultures, en, fi, sv
 ```
