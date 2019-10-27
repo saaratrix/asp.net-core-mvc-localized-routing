@@ -1,13 +1,13 @@
-﻿@using localization.Models.Example;
+@using localization.Models.Example;
 @model ParameterViewModel
 
 <!-- the id's are for tests so HtmlAgilityPack can find the elements easier. -->
 <span id="parameter_index">@ViewData["index"]</span> - <span id="parameter_test">@ViewData["test"]</span>
 <br />
-@Localizer["Is post request"]: @ViewData["post"]
+Is post request: @ViewData["post"]
 <br />
-<h2>@Localizer["HTTP Post request test"]</h2>
-<form method="post" cms-culture="@ViewData["culture"]" asp-action="Parameter" asp-controller="Example">
+<h2>HTTP post request: </h2>
+<form method="post" asp-action="Parameter" asp-controller="Example">
     <div>
         <label asp-for="Index"></label>
         <input asp-for="Index" />
@@ -16,5 +16,5 @@
         <input asp-for="Test" />
     </div>
     <br />
-    <button type="submit">@Localizer["Post parameters"]</button>
+    <button type="submit">Post parameters</button>
 </form>

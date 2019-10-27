@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
 namespace localization.Localization
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]   
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]   
     public class LocalizationRouteAttribute : Attribute
     {
         /// <summary>
@@ -17,7 +17,7 @@ namespace localization.Localization
         /// The characters to split a route on to generate a more link friendly url.
         /// For example some_route => Some Route
         /// </summary>
-        private static char[] RouteToLinkSplitCharacters = new char[] { '_', '-' };
+        private static readonly char[] RouteToLinkSplitCharacters = new char[] { '_', '-' };
 
         /// <summary>
         /// The culture string representation, en, fi, sv e.t.c.!
@@ -70,7 +70,7 @@ namespace localization.Localization
             Route = Route.Replace(' ', WhiteSpaceReplacement);            
             
             // If the link is null then set it to the route
-            if (String.IsNullOrEmpty(link))
+            if (string.IsNullOrEmpty(link))
             {   
                 Link = ConvertRouteToLink(Culture, Route);         
             }
