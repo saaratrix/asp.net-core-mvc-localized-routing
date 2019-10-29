@@ -41,6 +41,7 @@ namespace localization.Controllers
 			ViewData["test"] = test;
 			ViewData["post"] = false;
 			return View();
+			
 		}
 
 		// Routes for each culture:

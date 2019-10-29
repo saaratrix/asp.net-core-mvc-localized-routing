@@ -12,8 +12,8 @@ namespace localization.Localization
 			if (!values.ContainsKey("culture") || !values.ContainsKey("controller"))
 				return values;
 
-			values["controller"] = "Home";
-			values["action"] = "Privacy";
+			values["controller"] = "Example";
+			values["action"] = "Parameter";
 
 			return values;
 		}

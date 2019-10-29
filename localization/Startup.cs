@@ -24,9 +24,14 @@ namespace localization
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddControllersWithViews();
+			IMvcBuilder mvcBuilder = services.AddControllersWithViews(options =>
+			{
+				options.Conventions.Add(new LocalizationRouteConvention());
+			});
 
 			services.AddSingleton<LocalizationTransformer>();
+			
+			
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
