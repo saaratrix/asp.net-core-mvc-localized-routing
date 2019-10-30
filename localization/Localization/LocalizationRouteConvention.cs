@@ -1,5 +1,5 @@
+using System;
 using System.Linq;
-using localization.Localization.CultureRouteData;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace localization.Localization
@@ -32,7 +32,9 @@ namespace localization.Localization
 				// Because it's the same as falling back to default culture.
 				if (string.IsNullOrEmpty(attribute.Route))
 					continue;
-				// TODO: If culture doesn't exist in registered cultures, throw an exception?
+				
+				if (!LocalizationRouteDataHandler.SupportedCultures.ContainsKey(attribute.Culture))
+					throw new Exception($"Culture: {attribute.Culture} not found for controller: {controller.ControllerName}");
 				
 				LocalizationRouteDataHandler.AddControllerRouteData(controller.ControllerName, attribute.Culture, attribute.Route);
 			}
@@ -46,6 +48,9 @@ namespace localization.Localization
 			{
 				if (string.IsNullOrEmpty(attribute.Route))
 					continue;
+				
+				if (!LocalizationRouteDataHandler.SupportedCultures.ContainsKey(attribute.Culture))
+					throw new Exception($"Culture: {attribute.Culture} not found for controller: {controllerName} action: {action.ActionName}");
 				
 				LocalizationRouteDataHandler.AddActionRouteData(controllerName, action.ActionName, attribute.Culture, attribute.Route);
 			}

@@ -33,8 +33,11 @@ namespace localization.Localization
 			if (!ControllerRoutes.ContainsKey(controllerKey))
 			{                
 				ControllerRoutes.TryAdd(controllerKey, new CultureControllerRouteData());
-			}            
-			ControllerRoutes[controllerKey].Names.TryAdd(culture, route);	
+			}
+
+			if (!string.IsNullOrEmpty(route))
+				ControllerRoutes[controllerKey].Names.TryAdd(culture, route);	
+			
 		}
 
 		public static void AddActionRouteData(string controller, string action, string culture, string route)
