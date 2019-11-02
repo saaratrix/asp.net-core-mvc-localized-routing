@@ -5,5 +5,10 @@ namespace localization.tests.UnitTests.Localization
 	[TestFixture]
 	public class LocalizationRouteDataHandlerTests
 	{
+		[Test]
+		public void GetRouteDataTest()
+		{
+			Assert.Fail("Not Implemented.");	
+		}
 	}
 }

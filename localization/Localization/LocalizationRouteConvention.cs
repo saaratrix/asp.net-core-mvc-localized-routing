@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
@@ -30,11 +31,8 @@ namespace localization.Localization
 			{
 				// There is no need to add route data for an empty attribute.
 				// Because it's the same as falling back to default culture.
-				if (string.IsNullOrEmpty(attribute.Route))
+				if (string.IsNullOrWhiteSpace(attribute.Culture) || string.IsNullOrWhiteSpace(attribute.Route))
 					continue;
-				
-				if (!LocalizationRouteDataHandler.SupportedCultures.ContainsKey(attribute.Culture))
-					throw new Exception($"Culture: {attribute.Culture} not found for controller: {controller.ControllerName}");
 				
 				LocalizationRouteDataHandler.AddControllerRouteData(controller.ControllerName, attribute.Culture, attribute.Route);
 			}
@@ -46,11 +44,8 @@ namespace localization.Localization
 
 			foreach (var attribute in attributes)
 			{
-				if (string.IsNullOrEmpty(attribute.Route))
+				if (string.IsNullOrWhiteSpace(attribute.Culture) || string.IsNullOrWhiteSpace(attribute.Route))
 					continue;
-				
-				if (!LocalizationRouteDataHandler.SupportedCultures.ContainsKey(attribute.Culture))
-					throw new Exception($"Culture: {attribute.Culture} not found for controller: {controllerName} action: {action.ActionName}");
 				
 				LocalizationRouteDataHandler.AddActionRouteData(controllerName, action.ActionName, attribute.Culture, attribute.Route);
 			}

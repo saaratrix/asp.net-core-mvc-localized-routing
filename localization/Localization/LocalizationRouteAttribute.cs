@@ -34,20 +34,13 @@ namespace localization.Localization
         {                        
         }
 
-        public LocalizationRouteAttribute(string culture)
-            :this(culture, "")
-        {
-
-        }
-        
-
         /// <summary>
         /// Attribute used by LocalizationConvention to create all the routes.
         /// </summary>
         /// <param name="culture"></param>
         /// <param name="route"></param>
         /// <param name="link">If not defined the value is route with first letter capitalized</param>
-        public LocalizationRouteAttribute(string culture, string route)
+        public LocalizationRouteAttribute(string culture, string route = "")
         {
             Culture = culture;
             Route = route;
