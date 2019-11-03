@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using localization.Localization.CultureRouteData;
 
 namespace localization.Localization
@@ -57,17 +58,41 @@ namespace localization.Localization
 		}
 
 		/// <summary>
-		/// The input data comes in localized form so we need to return the normal controller and action.
+		/// The input data comes in localized form so we need to return the ASP.NET controller & action names. 
 		/// </summary>
-		/// <param name="controller"></param>
-		/// <param name="action"></param>
+		/// <param name="controller">A localized controller route.</param>
+		/// <param name="action">A localized action route.</param>
+		/// <param name="culture">The culture used to do reverse lookup from localized route.</param>
 		/// <returns></returns>
-		public static LocalizationRouteData GetRouteData(string controller, string action)
+		public static LocalizationRouteData GetRouteData(string controller, string action, string culture)
 		{
 			controller = controller.ToLower();
 			action = action.ToLower();
+
+			// First we get the localized controller
+			string localizedControllerKey = $"{culture}/{controller}";
+			var controllerRoute = LocalizedControllerNames.ContainsKey(localizedControllerKey) 
+					? LocalizedControllerNames[localizedControllerKey] : null;
+
+			if (controllerRoute == null)
+				controllerRoute = ControllerRoutes.ContainsKey(controller) ? ControllerRoutes[controller] : null;
 			
-			return null;
+			// If no controller route data is found there is no point to look for an action, so return early.
+			if (controllerRoute == null) 
+				return new LocalizationRouteData(null, controller, action);
+			// For example if controller was in finnish this will make sure that it's the controller name used by ASP.NET.
+			controller = controllerRoute.ControllerName;
+			
+			string localizedActionKey = $"{culture}/{action}";
+			var actionRoute = controllerRoute.LocalizedActionNames.ContainsKey(localizedActionKey) 
+					? controllerRoute.LocalizedActionNames[localizedActionKey] : null;
+
+			if (actionRoute == null)
+				actionRoute = controllerRoute.Actions.ContainsKey(controller) ? controllerRoute.Actions[controller] : null;
+			// Set the action as the actionName used by ASP.NET or the input action.
+			action = actionRoute?.ActionName ?? action;
+			
+			return new LocalizationRouteData(null, controller, action);
 		}
 	}
 }
