@@ -24,7 +24,8 @@ namespace localization.tests.UnitTests.Localization
 			var testController = new ControllerModel(type.GetTypeInfo(), new []
 			{
 					new LocalizationRouteAttribute("fi", "Testi"),
-					new LocalizationRouteAttribute("sv")
+					new LocalizationRouteAttribute("sv"),
+					new LocalizationRouteAttribute("", "テスト")
 			});
 			testController.ControllerName = "Test";
 			routeConvention.AddControllerRoutes(testController);
@@ -32,13 +33,7 @@ namespace localization.tests.UnitTests.Localization
 			Assert.IsTrue(LocalizationRouteDataHandler.ControllerRoutes.ContainsKey("test"), "Controller routes should have added test controller.");
 			var controllerRoute = LocalizationRouteDataHandler.ControllerRoutes["test"];
 
-			Assert.IsTrue(controllerRoute.Routes.ContainsKey("fi"), "Finnish culture should be added.");
-			Assert.IsTrue(controllerRoute.Routes.First(r => r.Key == "fi").Value == "Testi", "Finnish route should have correct value.");
-			Assert.IsTrue(!controllerRoute.Routes.ContainsKey("sv"), "Swedish culture should not be added because route was empty.");
-			// Should not contain default culture
-			Assert.IsTrue(!controllerRoute.Routes.ContainsKey(DefaultCulture), "default culture shouldn't be added.");
-			
-			Assert.Fail("Need to update, simplify checks and move it to LocalizationRouteDataHandler tests instead.");
+			Assert.IsTrue(controllerRoute.Routes.Count == 1, "Only 1 route should have been added.");
 		}
 
 		[Test]
@@ -50,7 +45,8 @@ namespace localization.tests.UnitTests.Localization
 			var actionModel = new ActionModel(type.GetMethod(methodName), new []
 			{
 					new LocalizationRouteAttribute("fi", "TestiA"),
-					new LocalizationRouteAttribute("sv")
+					new LocalizationRouteAttribute("sv"),
+					new LocalizationRouteAttribute("", "テスト")
 			});
 			actionModel.ActionName = methodName;
 			var controllerName = "test";
@@ -61,35 +57,20 @@ namespace localization.tests.UnitTests.Localization
 			var controllerRoute = LocalizationRouteDataHandler.ControllerRoutes[controllerName];
 			Assert.IsTrue(controllerRoute.Actions.ContainsKey(methodName.ToLower()), "Test method data should exist.");
 
-			var action = controllerRoute.Actions[methodName.ToLower()];
-			
-			Assert.IsTrue(action.Routes.ContainsKey("fi"), "Finnish culture for action should be added.");
-			Assert.IsTrue(action.Routes.First(r => r.Key == "fi").Value == "TestiA", "Finnish action should have correct route.");
-			Assert.IsTrue(!action.Routes.ContainsKey("sv"), "Swedish culture for action should not be added.");
-			Assert.IsTrue(!action.Routes.ContainsKey(DefaultCulture), "Default culture should not be added to action culture.");
-
-			controllerName = "othercontroller";
-			routeConvention.AddActionRoutes(controllerName, actionModel);
-			
-			Assert.IsTrue(LocalizationRouteDataHandler.ControllerRoutes.ContainsKey(controllerName));
-			controllerRoute = LocalizationRouteDataHandler.ControllerRoutes[controllerName];
-			Assert.IsTrue(controllerRoute.Actions.ContainsKey(methodName.ToLower()), "Test method data should exist for a second controller.");
-			
-			Assert.Fail("Need to update, simplify checks and move it to LocalizationRouteDataHandler tests instead.");
+			Assert.IsTrue(controllerRoute.Actions[methodName.ToLower()].Routes.Count == 1, "Only 1 action should have been added");
 		}
 
 		[SetUp]
 		public void SetUp()
 		{
-			LocalizationRouteDataHandler.DefaultCulture = DefaultCulture;
+			TestLocalizationRouteDataHandlerHelper.SetUpLocalizationRouteDataHandlerHelper(DefaultCulture);
 			routeConvention = new LocalizationRouteConvention();
 		}
 
 		[TearDown]
 		public void TearDown()
 		{
-			LocalizationRouteDataHandler.DefaultCulture    = "";
-			LocalizationRouteDataHandler.ControllerRoutes.Clear();
+			TestLocalizationRouteDataHandlerHelper.TearDownLocalizationRouteDataHandlerHelper();
 		}
 		
 		/// <summary>
