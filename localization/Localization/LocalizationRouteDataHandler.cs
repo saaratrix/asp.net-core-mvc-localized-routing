@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using localization.Localization.CultureRouteData;
@@ -23,7 +24,7 @@ namespace localization.Localization
 		public static Dictionary<string, CultureControllerRouteData> LocalizedControllerNames { get; } = new Dictionary<string, CultureControllerRouteData>();
 		public static Dictionary<string, CultureControllerRouteData> ControllerRoutes { get; } = new Dictionary<string, CultureControllerRouteData>();
 		
-		public static void AddControllerRouteData(string controller, string culture, string route)
+		public static void AddControllerRouteData(string controller, string? culture, string? route)
 		{
 			controller = controller.ToLower();
 			     
@@ -37,7 +38,7 @@ namespace localization.Localization
 			LocalizedControllerNames.Add($"{culture}/{route}", ControllerRoutes[controller]);
 		}
 
-		public static void AddActionRouteData(string controller, string action, string culture, string route)
+		public static void AddActionRouteData(string controller, string action, string? culture, string? route)
 		{
 			controller = controller.ToLower();
 			action = action.ToLower();
@@ -68,7 +69,20 @@ namespace localization.Localization
 		{
 			controller = controller.ToLower();
 			action = action.ToLower();
+			
+			var controllerRoute = GetControllerRouteData(controller, culture);
+			// If no controller route data is found there is no point to look for an action, so return early.
+			if (controllerRoute == null)
+				return new LocalizationRouteData(null, controller, action);
+			// For example if controller was in finnish this will make sure that it's the controller name used by ASP.NET.
+			controller = controllerRoute.ControllerName;
+			action = GetActionRouteData(controllerRoute, action, culture);
+			
+			return new LocalizationRouteData(null, controller, action);
+		}
 
+		private static CultureControllerRouteData? GetControllerRouteData(string controller, string culture)
+		{
 			// First we get the localized controller
 			string localizedControllerKey = $"{culture}/{controller}";
 			var controllerRoute = LocalizedControllerNames.ContainsKey(localizedControllerKey) 
@@ -77,22 +91,21 @@ namespace localization.Localization
 			if (controllerRoute == null)
 				controllerRoute = ControllerRoutes.ContainsKey(controller) ? ControllerRoutes[controller] : null;
 			
-			// If no controller route data is found there is no point to look for an action, so return early.
-			if (controllerRoute == null) 
-				return new LocalizationRouteData(null, controller, action);
-			// For example if controller was in finnish this will make sure that it's the controller name used by ASP.NET.
-			controller = controllerRoute.ControllerName;
-			
+			return controllerRoute;
+		}
+
+		private static string GetActionRouteData(CultureControllerRouteData controllerRoute, string action, string culture)
+		{
 			string localizedActionKey = $"{culture}/{action}";
 			var actionRoute = controllerRoute.LocalizedActionNames.ContainsKey(localizedActionKey) 
 					? controllerRoute.LocalizedActionNames[localizedActionKey] : null;
 
 			if (actionRoute == null)
-				actionRoute = controllerRoute.Actions.ContainsKey(controller) ? controllerRoute.Actions[controller] : null;
+				actionRoute = controllerRoute.Actions.ContainsKey(action) ? controllerRoute.Actions[action] : null;
 			// Set the action as the actionName used by ASP.NET or the input action.
 			action = actionRoute?.ActionName ?? action;
-			
-			return new LocalizationRouteData(null, controller, action);
+
+			return action;
 		}
 	}
 }

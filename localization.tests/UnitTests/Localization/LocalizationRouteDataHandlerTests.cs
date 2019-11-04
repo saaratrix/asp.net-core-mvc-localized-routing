@@ -161,7 +161,7 @@ namespace localization.tests.UnitTests.Localization
 		}
 
 		[Test]
-		public void GetRouteDataTest_ValidController_Test()
+		public void GetRouteDataTest_ValidController_InvalidAction_Test()
 		{
 			TestTearDownWorked();
 			string controller = "testcontroller";
@@ -170,38 +170,92 @@ namespace localization.tests.UnitTests.Localization
 			string routeController = "testi";
 			string randomAction = "nuusie";
 			
+			string extraController = "extracontroller";
+			string extraAction     = "extraAction";
+			string extraRouteController = "extratesti";
+			
 			LocalizationRouteDataHandler.AddControllerRouteData(controller, culture, routeController);
 			LocalizationRouteDataHandler.AddActionRouteData(controller, action, null, null);
+			LocalizationRouteDataHandler.AddControllerRouteData(extraController, culture, extraRouteController);
+			LocalizationRouteDataHandler.AddActionRouteData(extraController, extraAction, null, null);
 
 			var result = LocalizationRouteDataHandler.GetRouteData(routeController, randomAction, culture);
 			
 			Assert.IsTrue(result.Controller == controller, "Reverse lookup for controller route should return controller");
 			Assert.IsTrue(result.Action == randomAction, "No action was found so the input was returned.");
 
-			Assert.Fail("Not Implemented.");
+			result = LocalizationRouteDataHandler.GetRouteData(controller, randomAction, culture);
+			
+			Assert.IsTrue(result.Controller == controller, "Should return controller because controller was found.");
+			Assert.IsTrue(result.Action == randomAction, "No action was found so the input was returned. 2");
 		}
 
 		[Test]
-		public void GetRouteDataTest_ValidController_InvalidAction_Test()
+		public void GetRouteDataTest_ValidController_ValidAction_Test()
 		{
 			TestTearDownWorked();
-			Assert.Fail("Not Implemented.");
+			string controller      = "testcontroller";
+			string action          = "testaction";
+			string culture         = "fi";
+			string routeController = "finnishcontroller";
+			string routeAction 	   = "finnishaction";
+			
+			string extraController      = "extracontroller";
+			string extraRouteController = "extratesti";
+			
+			
+			LocalizationRouteDataHandler.AddControllerRouteData(controller, culture, routeController);
+			LocalizationRouteDataHandler.AddActionRouteData(controller, action, culture, routeAction);
+			LocalizationRouteDataHandler.AddControllerRouteData(extraController, culture, extraRouteController);
+			LocalizationRouteDataHandler.AddActionRouteData(extraController, action, culture, routeAction);
+
+			var result = LocalizationRouteDataHandler.GetRouteData(routeController, routeAction, culture);
+			
+			Assert.IsTrue(result.Controller == controller, "Reverse lookup for controller should find original controller.");
+			Assert.IsTrue(result.Action == action, "Reverse lookup for action should find original action.");
+			
+			// Bit silly to test this because default is to return the incorrect controller & action ^^
+			result = LocalizationRouteDataHandler.GetRouteData(controller, action, culture);
+			
+			Assert.IsTrue(result.Controller == controller, "Original controller should return original controller.");
+			Assert.IsTrue(result.Action == action, "Original action should return original action.");
+			// Test culture controller, original action
+			result = LocalizationRouteDataHandler.GetRouteData(routeController, routeAction, culture);
+			
+			Assert.IsTrue(result.Controller == controller, "Reverse lookup for controller should find original controller 2.");
+			Assert.IsTrue(result.Action == action, "Original action should return original action 2.");
+			// Test original controller, culture action
+			result = LocalizationRouteDataHandler.GetRouteData(controller, routeAction, culture);
+			
+			Assert.IsTrue(result.Controller == controller, "Original controller should return original controller 2.");
+			Assert.IsTrue(result.Action == action, "Reverse lookup for action should find original action 2.");
 		}
 
 		[Test]
-		public void GetRouteDataTest_InvalidController_ValidAction_Test()
+		public void GetRouteDataTest_InvalidController_Test()
 		{
 			TestTearDownWorked();
-			Assert.Fail("Not Implemented.");
-		}
+			string controller       = "testcontroller";
+			string action           = "testaction";
+			string culture          = "fi";
+			string routeController  = "finnishcontroller";
+			string routeAction      = "finnishaction";
+			string incorrectCulture = "sv";
+			string otherController = "nuusie";
+			string otherAction = "bonks";
+			
+			LocalizationRouteDataHandler.AddControllerRouteData(controller, culture, routeController);
+			LocalizationRouteDataHandler.AddActionRouteData(controller, action, culture, routeAction);
+			
+			var result = LocalizationRouteDataHandler.GetRouteData(otherController, otherAction, culture);
+			
+			Assert.IsTrue(result.Controller == otherController, "controller should be as input");
+			Assert.IsTrue(result.Action == otherAction, "action should be as input");
 
-		[Test]
-		public void GetRouteDataTest_InvalidControllerAction_Test()
-		{
-			TestTearDownWorked();
-			Assert.Fail("Not Implemented.");
+			result = LocalizationRouteDataHandler.GetRouteData(routeController, routeAction, incorrectCulture);
+			Assert.IsTrue(result.Controller == routeController, "controller shouldn't be reverse looked up because of incorrect culture.");
+			Assert.IsTrue(result.Action == routeAction, "action shouldn't be reverse looked up because no controller was found.");
 		}
-
 
 		[SetUp]
 		public void SetUp()

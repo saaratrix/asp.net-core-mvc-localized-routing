@@ -14,32 +14,21 @@ namespace localization.Localization
         private const char WhiteSpaceReplacement = '_';
 
         /// <summary>
-        /// The characters to split a route on to generate a more link friendly url.
-        /// For example some_route => Some Route
-        /// </summary>
-        private static readonly char[] RouteToLinkSplitCharacters = new char[] { '_', '-' };
-
-        /// <summary>
         /// The culture string representation, en, fi, sv e.t.c.!
         /// </summary>
-        public string Culture { get; set; }
+        public string Culture { get; }
         /// <summary>
         /// The route, no need for /.
         /// It is case sensitive.
         /// Meaning "roUTe" would create the route "/roUTe"
         /// </summary>
-        public string Route { get; set; }
-
-        public LocalizationRouteAttribute()
-        {                        
-        }
+        public string Route { get; }
 
         /// <summary>
         /// Attribute used by LocalizationConvention to create all the routes.
         /// </summary>
         /// <param name="culture"></param>
         /// <param name="route"></param>
-        /// <param name="link">If not defined the value is route with first letter capitalized</param>
         public LocalizationRouteAttribute(string culture, string route = "")
         {
             Culture = culture;
