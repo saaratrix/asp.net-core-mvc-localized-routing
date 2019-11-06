@@ -63,6 +63,12 @@ namespace localization.tests.UnitTests.Localization
 		}
 
 		[Test]
+		public void AddControllerRouteData_CaseInsensitivity_ValidTest()
+		{
+			Assert.Fail("Not Implemented.");
+		}
+
+		[Test]
 		[TestCase("test", "", "testi")]
 		[TestCase("test", "fi", "")]
 		[TestCase("test", "", "")]
@@ -142,6 +148,12 @@ namespace localization.tests.UnitTests.Localization
 
 			Assert.IsTrue(controllerRoute.LocalizedActionNames.Count == 3, "3 localized action should exist after adding other route.");
 			Assert.IsTrue(controllerRoute.LocalizedActionNames[$"{culture}/{otherRoute}"] == otherActionRoute);
+		}
+		
+		[Test]
+		public void AddActionRouteData_CaseInsensitivity_ValidTest()
+		{
+			Assert.Fail("Not Implemented.");
 		}
 
 		[Test]

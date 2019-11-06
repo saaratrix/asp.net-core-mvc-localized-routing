@@ -35,7 +35,7 @@ namespace localization.Localization
 				return;
 			
 			ControllerRoutes[controller].Routes.TryAdd(culture, route);
-			LocalizedControllerNames.Add($"{culture}/{route}", ControllerRoutes[controller]);
+			LocalizedControllerNames.TryAdd($"{culture}/{route.ToLower()}", ControllerRoutes[controller]);
 		}
 
 		public static void AddActionRouteData(string controller, string action, string? culture, string? route)
@@ -55,7 +55,7 @@ namespace localization.Localization
 				return;
 			
 			controllerRoute.Actions[action].Routes.TryAdd(culture, route);
-			controllerRoute.LocalizedActionNames.Add($"{culture}/{route}", controllerRoute.Actions[action]);
+			controllerRoute.LocalizedActionNames.TryAdd($"{culture}/{route.ToLower()}", controllerRoute.Actions[action]);
 		}
 
 		/// <summary>

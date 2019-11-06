@@ -16,7 +16,7 @@ namespace localization.Controllers
 	// Finnish: /fi/exampleFi
 	// Swedish: /sv/Example     - Takes the name of controller since no [LocalizationRoute] for swedish culture   
 	// The link text for <a> tags will be ExampleFi
-	[LocalizationRoute("fi", "exampleFi")]    
+	[LocalizationRoute("fi", "exampleFi")]
 	public class ExampleController : Controller
 	{        
 		public ExampleController()
@@ -33,7 +33,7 @@ namespace localization.Controllers
 		// Finnish: /fi/exampleFi/param/{index}/{test}
 		// Swedish: /sv/Example/Parameter/{index}/{test}        - Gets the Action name automatically because no [LocalizationRoute] attribute
 		// [HttpGet("parameter/{index}/{test}")]                - [HttpGet] can be used instead of [Route]
-//		[Route("parameter/{index}/{test}")]        
+		[Route("example/parameter/{index}/{test}")]        
 		[LocalizationRoute("fi", "param")]
 		public IActionResult Parameter(int index, string test)
 		{

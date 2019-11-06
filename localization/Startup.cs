@@ -60,7 +60,7 @@ namespace localization
 				endpoints.MapControllerRoute(
 					name: "default",
 					pattern: "{controller=Home}/{action=Index}/{id?}");
-				endpoints.MapDynamicControllerRoute<LocalizationTransformer>("{culture}/{controller=Home}/{action=Index}");
+				endpoints.MapDynamicControllerRoute<LocalizationTransformer>("{culture}/{controller=Home}/{action=Index}/{*params}");
 			});
 		}
 	}

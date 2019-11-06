@@ -37,6 +37,26 @@ namespace localization.tests.UnitTests.Localization
 		}
 
 		[Test]
+		public void AddControllerRoutes_MultipleLocalizationRoutes_Test()
+		{
+			var type = typeof(TestController);
+			var testController = new ControllerModel(type.GetTypeInfo(), new []
+			{
+					new LocalizationRouteAttribute("fi", "Testi"),
+					new LocalizationRouteAttribute("fi", "Testi"),
+			});
+			testController.ControllerName = "Test";
+			
+			routeConvention.AddControllerRoutes(testController);
+
+			Assert.IsTrue(LocalizationRouteDataHandler.ControllerRoutes.ContainsKey("test"), "Contains controller key");
+			
+			var controllerRoute = LocalizationRouteDataHandler.ControllerRoutes["test"];
+
+			Assert.IsTrue(controllerRoute.Routes.Count == 1, "Only 1 route should have been added.");
+		}
+
+		[Test]
 		public void AddActionRoutes_Valid_Test()
 		{
 			var type = GetType();
@@ -56,8 +76,37 @@ namespace localization.tests.UnitTests.Localization
 			
 			var controllerRoute = LocalizationRouteDataHandler.ControllerRoutes[controllerName];
 			Assert.IsTrue(controllerRoute.Actions.ContainsKey(methodName.ToLower()), "Test method data should exist.");
-
 			Assert.IsTrue(controllerRoute.Actions[methodName.ToLower()].Routes.Count == 1, "Only 1 action should have been added");
+		}
+
+		[Test]
+		public void AddActionRoutes_MultipleLocalizationRoutes_Test()
+		{
+			var    type       = GetType();
+			string methodName = "ActionsTestMethod";
+			
+			var actionModel = new ActionModel(type.GetMethod(methodName), new []
+			{
+					new LocalizationRouteAttribute("fi", "TestiA"),
+					new LocalizationRouteAttribute("fi", "TestiA"),
+			});
+			actionModel.ActionName = methodName;
+			var controllerName = "test";
+			
+			LocalizationRouteDataHandler.AddControllerRouteData(controllerName, DefaultCulture, "");
+			routeConvention.AddActionRoutes(controllerName, actionModel);
+			
+			// This happens for example for a HttpGet and HttpPost method with the same name.
+			var sameActionModel = new ActionModel(type.GetMethod(methodName), new []
+			{
+				new LocalizationRouteAttribute("fi", "TestiA"),	
+			});
+			
+			routeConvention.AddActionRoutes(controllerName, actionModel);
+
+			var controllerRoute = LocalizationRouteDataHandler.ControllerRoutes[controllerName];
+			Assert.IsTrue(controllerRoute.Actions.Count == 1);
+			Assert.IsTrue(controllerRoute.Actions.ContainsKey(methodName.ToLower()));
 		}
 
 		[SetUp]

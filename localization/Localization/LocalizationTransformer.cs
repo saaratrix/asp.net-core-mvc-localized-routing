@@ -12,8 +12,14 @@ namespace localization.Localization
 			if (!values.ContainsKey("culture") || !values.ContainsKey("controller"))
 				return values;
 
-			values["controller"] = "Example";
-			values["action"] = "Parameter";
+			string controller = (string)values["controller"];
+			string action = (string) values["action"];
+			string culture = "fi";//(string) values["culture"];
+
+			var routeData = LocalizationRouteDataHandler.GetRouteData(controller, action, culture);
+
+			values["controller"] = routeData.Controller;
+			values["action"] = routeData.Action;
 
 			return values;
 		}
