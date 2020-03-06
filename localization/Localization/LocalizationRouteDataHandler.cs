@@ -1,6 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Net.Http;
 using localization.Localization.CultureRouteData;
 
 namespace localization.Localization
@@ -16,6 +15,7 @@ namespace localization.Localization
 		/// The default culture.
 		/// </summary>
 		public static string DefaultCulture { get; set; }
+		public static Dictionary<string, string> SupportedCultures { get; set; }
 		
 		/// <summary>
 		/// The controller name localized to be able to do a reverse lookup.
@@ -53,9 +53,28 @@ namespace localization.Localization
 
 			if (string.IsNullOrWhiteSpace(culture) || string.IsNullOrWhiteSpace(route))
 				return;
+
+			var actionRoute = controllerRoute.Actions[action];
+			controllerRoute.LocalizedActionNames.TryAdd($"{culture}/{route.ToLower()}", actionRoute);
+		}
+
+		public static void AddMethodRouteData(string controller, string action, HttpMethod method, List<RouteFragmentType> routeFragments, string? culture, string? route)
+		{
+			controller = controller.ToLower();
+			action = action.ToLower();
+			var actionRoute = ControllerRoutes[controller].Actions[action];
 			
-			controllerRoute.Actions[action].Routes.TryAdd(culture, route);
-			controllerRoute.LocalizedActionNames.TryAdd($"{culture}/{route.ToLower()}", controllerRoute.Actions[action]);
+			if (!actionRoute.Methods.ContainsKey(method))
+				actionRoute.Methods.Add(method, new CultureActionMethodRouteData(method));
+			
+			var methodRoute = actionRoute.Methods[method];
+			// Parameters?
+			
+			if (string.IsNullOrWhiteSpace(culture) || string.IsNullOrWhiteSpace(route))
+				return;
+			
+			methodRoute.Routes.Add(culture, route);
+			
 		}
 
 		/// <summary>
@@ -65,7 +84,7 @@ namespace localization.Localization
 		/// <param name="action">A localized action route.</param>
 		/// <param name="culture">The culture used to do reverse lookup from localized route.</param>
 		/// <returns></returns>
-		public static LocalizationRouteData GetRouteData(string controller, string action, string culture)
+		public static LocalizationRouteData GetRouteData(string controller, string action, HttpMethod method, string culture)
 		{
 			controller = controller.ToLower();
 			action = action.ToLower();
@@ -76,7 +95,7 @@ namespace localization.Localization
 				return new LocalizationRouteData(null, controller, action);
 			// For example if controller was in finnish this will make sure that it's the controller name used by ASP.NET.
 			controller = controllerRoute.ControllerName;
-			action = GetActionRouteData(controllerRoute, action, culture);
+			action = GetActionRouteData(controllerRoute, action, method, culture);
 			
 			return new LocalizationRouteData(null, controller, action);
 		}
@@ -94,7 +113,7 @@ namespace localization.Localization
 			return controllerRoute;
 		}
 
-		private static string GetActionRouteData(CultureControllerRouteData controllerRoute, string action, string culture)
+		private static string GetActionRouteData(CultureControllerRouteData controllerRoute, string action, HttpMethod method, string culture)
 		{
 			string localizedActionKey = $"{culture}/{action}";
 			var actionRoute = controllerRoute.LocalizedActionNames.ContainsKey(localizedActionKey) 

@@ -1,3 +1,4 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -14,12 +15,19 @@ namespace localization.Localization
 
 			string controller = (string)values["controller"];
 			string action = (string) values["action"];
-			string culture = "fi";//(string) values["culture"];
+			string culture = (string) values["culture"];
 
-			var routeData = LocalizationRouteDataHandler.GetRouteData(controller, action, culture);
+			var routeData = LocalizationRouteDataHandler.GetRouteData(controller, action, HttpMethod.Get, culture);
 
 			values["controller"] = routeData.Controller;
 			values["action"] = routeData.Action;
+
+			if (values.ContainsKey("params") && values["params"] != null)
+			{
+				var parameters = ((string) values["params"]).Split("/");
+				values["index"] = parameters[0];
+				values["test"] = parameters[1];
+			}
 
 			return values;
 		}
