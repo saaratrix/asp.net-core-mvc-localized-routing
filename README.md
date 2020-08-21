@@ -11,7 +11,7 @@ Code used for the blog post: https://saaratrix.blogspot.com/2017/12/localized-ro
 For the old solution for [ASP.NET Core 1.0 MVC release candidate 1](../../tree/core-1.0-rc-1)
 
 ## Other solutions:
-* **[BrightSoul](https://github.com/BrightSoul)** has done a 3.0 version that uses resource files to set up the routing instead of attributes.
+* **[BrightSoul](https://github.com/BrightSoul)** has done a ASP.NET Core 3.1 version that uses resource files to set up the routing instead of attributes.
 https://github.com/BrightSoul/aspnetcore-localization-demo
 
 ----
